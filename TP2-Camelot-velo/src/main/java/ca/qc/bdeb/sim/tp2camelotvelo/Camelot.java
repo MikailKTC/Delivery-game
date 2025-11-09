@@ -6,12 +6,15 @@ import javafx.scene.image.Image;
 
 public class Camelot extends ObjetDuJeu {
 
-    private Image[] images;
+    private final Image[] images;
     private int i = 0;
     private double tempsEcoule = 0;
 
-    public Camelot(Point2D position) {
-        super(position, 172, 144);
+    public Camelot() {
+
+        // Position horizontale = 20% de la largeur de l’écran, Position verticale = sur le sol
+
+        super(new Point2D(MainJavaFX.WIDTH * 0.2, MainJavaFX.HEIGHT - 144), 172, 144);
 
         images = new Image[]{
                 new Image("camelot1.png"),
@@ -19,18 +22,17 @@ public class Camelot extends ObjetDuJeu {
         };
 
         velocite = new Point2D(400, 0);
-
     }
 
     @Override
     public void update(double deltaTemps) {
         tempsEcoule += deltaTemps;
 
-        if(tempsEcoule>=0.25) {
-            i = (i+1)% images.length;
-            tempsEcoule=0;
+        if (tempsEcoule >= 0.25) {
+            i = (i + 1) % images.length;
+            tempsEcoule = 0;
         }
-        updatePhysique(deltaTemps);
+        super.updatePhysique(deltaTemps);
     }
 
     @Override

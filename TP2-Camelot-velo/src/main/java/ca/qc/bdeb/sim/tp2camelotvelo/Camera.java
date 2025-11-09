@@ -6,7 +6,6 @@ public class Camera {
 
     private Point2D positionCamera;
 
-
     public Camera() {
         positionCamera = new Point2D(0, 0);
     }
@@ -16,7 +15,7 @@ public class Camera {
     }
 
     public void suivreCamelot(Camelot camelot) {
-        double nouveauX = camelot.getPosition().getX() - 900 * 0.2;
+        double nouveauX = camelot.getPosition().getX() -  MainJavaFX.WIDTH * 0.2;
         positionCamera = new Point2D(nouveauX, 0);
     }
 

@@ -1,16 +1,47 @@
 package ca.qc.bdeb.sim.tp2camelotvelo;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class MainJavaFX extends Application {
+
+    public static final int WIDTH = 900;
+    public static final int HEIGHT = 580;
+    private Partie partie = new Partie();
+
     @Override
     public void start(Stage stage) throws IOException {
-        //J'ai modifié ici
+
+        var root = new Pane();
+        var scene = new Scene(root, WIDTH, HEIGHT);
+        var canvas = new Canvas(WIDTH, HEIGHT);
+        root.getChildren().add(canvas);
+        var context = canvas.getGraphicsContext2D();
+
+        stage.setTitle("Camelot à vélo");
+        stage.setScene(scene);
+
+        var timer = new AnimationTimer() {
+            long dernierTemps = System.nanoTime();
+
+            @Override
+            public void handle(long temps) {
+                double deltaTemps = (temps - dernierTemps) * 1e-9;
+                partie.update(deltaTemps);
+                partie.draw(context);
+                dernierTemps = temps;
+            }
+        };
+        timer.start();
+
+        stage.show();
     }
 
     public static void main(String[] args) {
