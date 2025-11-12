@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,7 +21,9 @@ public class MainJavaFX extends Application {
     public void start(Stage stage) throws IOException {
 
         var root = new Pane();
+
         var scene = new Scene(root, WIDTH, HEIGHT);
+        scene.setFill(Color.BLACK);
         var canvas = new Canvas(WIDTH, HEIGHT);
         root.getChildren().add(canvas);
         var context = canvas.getGraphicsContext2D();

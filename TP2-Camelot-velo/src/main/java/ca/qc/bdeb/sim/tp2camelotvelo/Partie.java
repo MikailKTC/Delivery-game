@@ -22,8 +22,22 @@ public class Partie {
 
         context.clearRect(0, 0, MainJavaFX.WIDTH, MainJavaFX.HEIGHT);
 
-        context.drawImage(background, 0, 0, MainJavaFX.WIDTH, MainJavaFX.HEIGHT);
+        context.drawImage(background, 0 , 0, 192, 96);
+        //drawBrique(context);
 
         camelot.draw(context, camera);
     }
+
+   /* public void drawBrique(GraphicsContext context) {
+
+        for (int j = 0; j < MainJavaFX.HEIGHT; j += 96) {
+            for (int i = 0; i < 16900; i += 192) {
+
+                context.drawImage(background, i,j,192,96);
+            }
+
+        }
+    }*/
+
+
 }
