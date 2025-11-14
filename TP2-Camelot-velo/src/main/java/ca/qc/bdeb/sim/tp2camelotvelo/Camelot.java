@@ -34,6 +34,7 @@ public class Camelot extends ObjetDuJeu {
         i = (int)Math.floor(tempsEcoule * 4) % images.length;
 
         double vx = accelerer(deltaTemps);
+        sauter();
         velocite = new Point2D(vx, velocite.getY());
 
         super.updatePhysique(deltaTemps);
@@ -70,7 +71,7 @@ public class Camelot extends ObjetDuJeu {
         return vx;
     }
 
-    public void sauter(double deltaTemps){
+    public void sauter(){
 
         boolean jump = Input.isKeyPressed(KeyCode.SPACE)
                 || Input.isKeyPressed(KeyCode.UP);
@@ -84,6 +85,7 @@ public class Camelot extends ObjetDuJeu {
             toucheLeSol = true;
             velocite = new Point2D(velocite.getX(), 0);
         }
+
     }
 
     @Override
