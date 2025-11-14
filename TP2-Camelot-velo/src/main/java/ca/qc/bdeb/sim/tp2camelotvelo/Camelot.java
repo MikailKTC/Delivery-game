@@ -3,6 +3,7 @@ package ca.qc.bdeb.sim.tp2camelotvelo;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 
 public class Camelot extends ObjetDuJeu {
 
@@ -28,10 +29,37 @@ public class Camelot extends ObjetDuJeu {
     public void update(double deltaTemps) {
         tempsEcoule += deltaTemps;
 
-        if (tempsEcoule >= 0.25) {
-            i = (i + 1) % images.length;
-            tempsEcoule = 0;
+        i = (int)Math.floor(tempsEcoule * 4) % images.length;
+
+
+        double vx = velocite.getX();
+        double accel = 300;
+
+        if (Input.isKeyPressed(KeyCode.LEFT)) {
+            vx -= accel * deltaTemps;
+            if (vx < 200) {
+                vx = 200;
+            }
         }
+
+        else if (Input.isKeyPressed(KeyCode.RIGHT)) {
+            vx += accel * deltaTemps;
+            if (vx > 600) vx = 600;
+        }
+
+        else {
+            if (vx < 400) {
+                vx += accel * deltaTemps;
+                if (vx > 400) vx = 400;
+            } else if (vx > 400) {
+                vx -= accel * deltaTemps;
+                if (vx < 400) vx = 400;
+            }
+        }
+
+
+        velocite = new Point2D(vx, velocite.getY());
+
         super.updatePhysique(deltaTemps);
     }
 
