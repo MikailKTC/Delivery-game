@@ -22,22 +22,34 @@ public class Partie {
 
         context.clearRect(0, 0, MainJavaFX.WIDTH, MainJavaFX.HEIGHT);
 
-        context.drawImage(background, 0 , 0, 192, 96);
-        //drawBrique(context);
+        drawBrique(context);
 
         camelot.draw(context, camera);
     }
 
-   /* public void drawBrique(GraphicsContext context) {
+   public void drawBrique(GraphicsContext context) {
 
-        for (int j = 0; j < MainJavaFX.HEIGHT; j += 96) {
-            for (int i = 0; i < 16900; i += 192) {
+       double largeurBrique = 192;
+       double hauteurBrique = 96;
 
-                context.drawImage(background, i,j,192,96);
+       double debut = camera.getPositionCamera().getX();
+       double fin   = debut + MainJavaFX.WIDTH;
+
+       int indexDebut = (int)Math.floor(debut / largeurBrique) - 1;
+       int indexFin   = (int)Math.ceil(fin / largeurBrique) + 1;
+
+
+       for (int j = 0; j < MainJavaFX.HEIGHT; j += (int) hauteurBrique) {
+            for (int i = indexDebut; i < indexFin; i ++) {
+
+                double x = i * largeurBrique;
+                double xEcran = x - debut;
+
+                context.drawImage(background, xEcran, j, largeurBrique, hauteurBrique);
             }
 
         }
-    }*/
+    }
 
 
 }
