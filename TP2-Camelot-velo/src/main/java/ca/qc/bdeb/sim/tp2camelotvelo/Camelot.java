@@ -10,6 +10,7 @@ public class Camelot extends ObjetDuJeu {
     private final Image[] images;
     private int i = 0;
     private double tempsEcoule = 0;
+    protected boolean toucheLeSol;
 
     public Camelot() {
 
@@ -23,6 +24,7 @@ public class Camelot extends ObjetDuJeu {
         };
 
         velocite = new Point2D(400, 0);
+        toucheLeSol = true;
     }
 
     @Override
@@ -68,19 +70,29 @@ public class Camelot extends ObjetDuJeu {
         return vx;
     }
 
+    public void sauter(double deltaTemps){
+
+        boolean jump = Input.isKeyPressed(KeyCode.SPACE)
+                || Input.isKeyPressed(KeyCode.UP);
+
+// Sauter = donner une vitesse vers le haut
+        if (toucheLeSol && jump) {
+            velocite = new Point2D(velocite.getX(), -300);
+            toucheLeSol = false;
+        }
+        if (position.getY() + taille.getY() >= MainJavaFX.HEIGHT) {
+            toucheLeSol = true;
+            velocite = new Point2D(velocite.getX(), 0);
+        }
+    }
+
     @Override
     public void draw(GraphicsContext context, Camera camera) {
         Point2D posEcran = camera.coordoEcran(position);
 
         context.drawImage(images[i], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
     }
+
 }
 
-//boolean jump = Input.isKeyPressed(KeyCode.SPACE)
-//        || Input.isKeyPressed(KeyCode.UP);
-//
-//// Sauter = donner une vitesse vers le haut
-//        if (toucheLeSol && jump) {
-//velocite = new Point2D(velocite.getX(), -300);
-//toucheLeSol = false;
-//        }
+
