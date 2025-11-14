@@ -41,9 +41,8 @@ public class Camelot extends ObjetDuJeu {
         velocite = new Point2D(vx, velocite.getY());
 
         super.updatePhysique(deltaTemps);
-        sauter(deltaTemps);
 
-
+        sauter();
 
     }
 
@@ -74,7 +73,7 @@ public class Camelot extends ObjetDuJeu {
         return vx;
     }
 
-    public void sauter(double deltaTemps) {
+    public void sauter() {
 
         if (position.getY() + taille.getY() >= MainJavaFX.HEIGHT) {
             position = new Point2D(position.getX(), MainJavaFX.HEIGHT - taille.getY());
