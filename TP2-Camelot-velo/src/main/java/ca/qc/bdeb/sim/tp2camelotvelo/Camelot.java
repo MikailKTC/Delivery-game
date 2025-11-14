@@ -31,6 +31,14 @@ public class Camelot extends ObjetDuJeu {
 
         i = (int)Math.floor(tempsEcoule * 4) % images.length;
 
+        double vx = accelerer(deltaTemps);
+        velocite = new Point2D(vx, velocite.getY());
+
+        super.updatePhysique(deltaTemps);
+    }
+
+    //Accélerer vers la droite/gauche/ralentir
+    public double accelerer(double deltaTemps){
 
         double vx = velocite.getX();
         double accel = 300;
@@ -57,10 +65,7 @@ public class Camelot extends ObjetDuJeu {
             }
         }
 
-
-        velocite = new Point2D(vx, velocite.getY());
-
-        super.updatePhysique(deltaTemps);
+        return vx;
     }
 
     @Override
@@ -70,3 +75,12 @@ public class Camelot extends ObjetDuJeu {
         context.drawImage(images[i], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
     }
 }
+
+//boolean jump = Input.isKeyPressed(KeyCode.SPACE)
+//        || Input.isKeyPressed(KeyCode.UP);
+//
+//// Sauter = donner une vitesse vers le haut
+//        if (toucheLeSol && jump) {
+//velocite = new Point2D(velocite.getX(), -300);
+//toucheLeSol = false;
+//        }
