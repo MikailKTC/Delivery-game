@@ -11,7 +11,7 @@ public class Camelot extends ObjetDuJeu {
     private int i = 0;
     private double tempsEcoule = 0;
     protected boolean toucheLeSol;
-    
+
 
     public Camelot() {
 
@@ -26,6 +26,7 @@ public class Camelot extends ObjetDuJeu {
 
         velocite = new Point2D(400, 0);
         toucheLeSol = true;
+        acceleration = new Point2D(0, 1500);
     }
 
     @Override
@@ -37,22 +38,13 @@ public class Camelot extends ObjetDuJeu {
 
         double vx = accelerer(deltaTemps);
 
-        acceleration = new Point2D(0, 1500);
-
-
-
         velocite = new Point2D(vx, velocite.getY());
 
-
+        super.updatePhysique(deltaTemps);
         sauter(deltaTemps);
 
-        super.updatePhysique(deltaTemps);
 
-        if (position.getY() + taille.getY() >= MainJavaFX.HEIGHT) {
-            position = new Point2D(position.getX(), MainJavaFX.HEIGHT - taille.getY());
-            velocite = new Point2D(velocite.getX(), 0);
-            toucheLeSol = true;
-        }
+
     }
 
     //Accélerer vers la droite/gauche/ralentir
@@ -83,6 +75,12 @@ public class Camelot extends ObjetDuJeu {
     }
 
     public void sauter(double deltaTemps) {
+
+        if (position.getY() + taille.getY() >= MainJavaFX.HEIGHT) {
+            position = new Point2D(position.getX(), MainJavaFX.HEIGHT - taille.getY());
+            velocite = new Point2D(velocite.getX(), 0);
+            toucheLeSol = true;
+        }
 
         boolean jump = Input.isKeyPressed(KeyCode.SPACE)
                 || Input.isKeyPressed(KeyCode.UP);
