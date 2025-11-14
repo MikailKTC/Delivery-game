@@ -24,6 +24,10 @@ public class MainJavaFX extends Application {
 
         var scene = new Scene(root, WIDTH, HEIGHT);
         scene.setFill(Color.BLACK);
+
+        scene.setOnKeyPressed(e -> Input.setKeyPressed(e.getCode(), true));
+        scene.setOnKeyReleased(e -> Input.setKeyPressed(e.getCode(), false));
+
         var canvas = new Canvas(WIDTH, HEIGHT);
         root.getChildren().add(canvas);
         var context = canvas.getGraphicsContext2D();
@@ -43,6 +47,8 @@ public class MainJavaFX extends Application {
             }
         };
         timer.start();
+
+        stage.setResizable(false);
 
         stage.show();
     }
