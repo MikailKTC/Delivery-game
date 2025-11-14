@@ -11,6 +11,7 @@ public class Camelot extends ObjetDuJeu {
     private int i = 0;
     private double tempsEcoule = 0;
     protected boolean toucheLeSol;
+    
 
     public Camelot() {
 
@@ -29,19 +30,33 @@ public class Camelot extends ObjetDuJeu {
 
     @Override
     public void update(double deltaTemps) {
+
         tempsEcoule += deltaTemps;
 
-        i = (int)Math.floor(tempsEcoule * 4) % images.length;
+        i = (int) Math.floor(tempsEcoule * 4) % images.length;
 
         double vx = accelerer(deltaTemps);
-        sauter();
+
+        acceleration = new Point2D(0, 1500);
+
+
+
         velocite = new Point2D(vx, velocite.getY());
 
+
+        sauter(deltaTemps);
+
         super.updatePhysique(deltaTemps);
+
+        if (position.getY() + taille.getY() >= MainJavaFX.HEIGHT) {
+            position = new Point2D(position.getX(), MainJavaFX.HEIGHT - taille.getY());
+            velocite = new Point2D(velocite.getX(), 0);
+            toucheLeSol = true;
+        }
     }
 
     //Accélerer vers la droite/gauche/ralentir
-    public double accelerer(double deltaTemps){
+    public double accelerer(double deltaTemps) {
 
         double vx = velocite.getX();
         double accel = 300;
@@ -51,14 +66,10 @@ public class Camelot extends ObjetDuJeu {
             if (vx < 200) {
                 vx = 200;
             }
-        }
-
-        else if (Input.isKeyPressed(KeyCode.RIGHT)) {
+        } else if (Input.isKeyPressed(KeyCode.RIGHT)) {
             vx += accel * deltaTemps;
             if (vx > 600) vx = 600;
-        }
-
-        else {
+        } else {
             if (vx < 400) {
                 vx += accel * deltaTemps;
                 if (vx > 400) vx = 400;
@@ -71,21 +82,15 @@ public class Camelot extends ObjetDuJeu {
         return vx;
     }
 
-    public void sauter(){
+    public void sauter(double deltaTemps) {
 
         boolean jump = Input.isKeyPressed(KeyCode.SPACE)
                 || Input.isKeyPressed(KeyCode.UP);
 
-// Sauter = donner une vitesse vers le haut
         if (toucheLeSol && jump) {
-            velocite = new Point2D(velocite.getX(), -300);
+            velocite = new Point2D(velocite.getX(), -500);
             toucheLeSol = false;
         }
-        if (position.getY() + taille.getY() >= MainJavaFX.HEIGHT) {
-            toucheLeSol = true;
-            velocite = new Point2D(velocite.getX(), 0);
-        }
-
     }
 
     @Override
