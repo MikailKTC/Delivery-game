@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -50,6 +51,8 @@ public class MainJavaFX extends Application {
 
         stage.setResizable(false);
 
+        Image icon = new Image("journal.png");
+        stage.getIcons().add(icon);
         stage.show();
     }
 
