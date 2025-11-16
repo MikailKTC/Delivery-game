@@ -2,21 +2,37 @@ package ca.qc.bdeb.sim.tp2camelotvelo;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
-public class Journal extends ObjetDuJeu{
+public class Journal extends ObjetDuJeu {
 
+    private double masse;
 
-    public Journal(Point2D position, double largeur, double hauteur) {
-        super(position, largeur, hauteur);
+    public Journal(Point2D velocite, Point2D position) {
+
+        super(new Point2D(0, 0), 52, 31);
+
+        this.velocite = velocite;
+        this.position = position;
+
+        images = new Image[]{new Image("journal.png")};
+
+        acceleration = new Point2D(0, 1500);
+        masse = 1 + Math.random();
     }
 
     @Override
     public void update(double deltaTemps) {
 
+        super.updatePhysique(deltaTemps);
+
     }
 
     @Override
     public void draw(GraphicsContext context, Camera camera) {
+        Point2D posEcran = camera.coordoEcran(position);
 
+        context.drawImage(images[0], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
     }
+    
 }

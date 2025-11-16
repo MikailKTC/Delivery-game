@@ -8,6 +8,7 @@ public class Partie {
     private Camera camera = new Camera();
     private Image background = new Image("brique.png");
 
+
     public Partie() {
     }
 

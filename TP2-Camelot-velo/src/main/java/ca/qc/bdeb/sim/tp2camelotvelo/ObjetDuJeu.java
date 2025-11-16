@@ -2,6 +2,7 @@ package ca.qc.bdeb.sim.tp2camelotvelo;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 public abstract class ObjetDuJeu {
 
@@ -9,6 +10,7 @@ public abstract class ObjetDuJeu {
     protected Point2D velocite;
     protected Point2D acceleration;
     protected Point2D taille;
+    protected Image[] images;
 
 
     public ObjetDuJeu(Point2D position, double largeur, double hauteur) {

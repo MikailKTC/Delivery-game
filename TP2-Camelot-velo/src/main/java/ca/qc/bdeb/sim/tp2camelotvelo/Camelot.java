@@ -5,13 +5,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
+import java.util.ArrayList;
+
 public class Camelot extends ObjetDuJeu {
 
-    private final Image[] images;
     private int i = 0;
     private double tempsEcoule = 0;
     protected boolean toucheLeSol;
-
+    private ArrayList<Journal> journauxLances = new ArrayList<>();
+    private boolean zPressedLastFrame = false;
+    private boolean xPressedLastFrame = false;
 
     public Camelot() {
 
@@ -43,6 +46,8 @@ public class Camelot extends ObjetDuJeu {
         super.updatePhysique(deltaTemps);
 
         sauter();
+
+        uptadeJournaux(deltaTemps);
 
     }
 
@@ -90,11 +95,47 @@ public class Camelot extends ObjetDuJeu {
         }
     }
 
+    public void lancerJournal() {
+
+        boolean zPressed = Input.isKeyPressed(KeyCode.Z);
+        boolean xPressed = Input.isKeyPressed(KeyCode.X);
+
+        if (zPressed && !zPressedLastFrame || xPressed && !xPressedLastFrame) {
+
+            Point2D m = Input.isKeyPressed(KeyCode.Z) ? new Point2D(900, -900) : new Point2D(150, -1100);
+            if (Input.isKeyPressed(KeyCode.SHIFT)) {
+                m = m.multiply(1.5);
+            }
+
+            Point2D centreCamelot = position.add(taille.multiply(0.5));
+
+            Journal journal = new Journal(velocite.add(m), centreCamelot);
+            journauxLances.add(journal);
+
+        }
+        zPressedLastFrame = zPressed;
+        xPressedLastFrame = xPressed;
+    }
+
+    public void uptadeJournaux(double deltaTemps) {
+
+        lancerJournal();
+
+        for (Journal j : journauxLances) {
+            j.update(deltaTemps);
+        }
+
+    }
+
     @Override
     public void draw(GraphicsContext context, Camera camera) {
         Point2D posEcran = camera.coordoEcran(position);
 
         context.drawImage(images[i], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
+
+        for (Journal j : journauxLances) {
+            j.draw(context, camera);
+        }
     }
 
 }
