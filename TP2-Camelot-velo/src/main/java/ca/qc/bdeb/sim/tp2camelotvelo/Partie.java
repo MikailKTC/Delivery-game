@@ -14,6 +14,7 @@ public class Partie {
 
     public void update(double deltaTemps) {
 
+        camelot.supprimerJournaux(camera);
         camelot.update(deltaTemps);
         camera.suivreCamelot(camelot);
 

@@ -65,4 +65,16 @@ public abstract class ObjetDuJeu {
         return taille.getX();
     }
 
+    public double getBasScene(){
+        return MainJavaFX.HEIGHT;
+    }
+
+    public double getDroitScene(){
+        return MainJavaFX.WIDTH;
+    }
+
+    public double getGaucheScene(){
+        return 0;
+    }
+
 }

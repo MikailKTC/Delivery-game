@@ -12,9 +12,9 @@ public class Camelot extends ObjetDuJeu {
     private int i = 0;
     private double tempsEcoule = 0;
     protected boolean toucheLeSol;
-    private ArrayList<Journal> journauxLances = new ArrayList<>();
-    private boolean zPressedLastFrame = false;
-    private boolean xPressedLastFrame = false;
+    private final ArrayList<Journal> journauxLances = new ArrayList<>();
+    private double tempsEcouleLance = 0;
+
 
     public Camelot() {
 
@@ -44,10 +44,8 @@ public class Camelot extends ObjetDuJeu {
         velocite = new Point2D(vx, velocite.getY());
 
         super.updatePhysique(deltaTemps);
-
         sauter();
-
-        uptadeJournaux(deltaTemps);
+        updateJournaux(deltaTemps);
 
     }
 
@@ -100,31 +98,66 @@ public class Camelot extends ObjetDuJeu {
         boolean zPressed = Input.isKeyPressed(KeyCode.Z);
         boolean xPressed = Input.isKeyPressed(KeyCode.X);
 
-        if (zPressed && !zPressedLastFrame || xPressed && !xPressedLastFrame) {
+        if (zPressed || xPressed) {
 
-            Point2D m = Input.isKeyPressed(KeyCode.Z) ? new Point2D(900, -900) : new Point2D(150, -1100);
-            if (Input.isKeyPressed(KeyCode.SHIFT)) {
-                m = m.multiply(1.5);
+            Point2D impulsion = new Point2D(0, 0);
+
+            if (zPressed) {
+                impulsion = new Point2D(900, -900);
+            }
+            if (xPressed) {
+                impulsion = new Point2D(150, -1100);
             }
 
-            Point2D centreCamelot = position.add(taille.multiply(0.5));
+            if (Input.isKeyPressed(KeyCode.SHIFT)) {
+                impulsion = impulsion.multiply(1.5);
+            }
 
-            Journal journal = new Journal(velocite.add(m), centreCamelot);
+            Point2D nouvVelocite = velocite.add(impulsion.multiply(1 / Journal.masse));
+            double max = 1500;
+
+            //Maximum vélocité = 1500px/sec
+            if (nouvVelocite.magnitude() >= max) {
+                nouvVelocite = nouvVelocite.multiply(max / nouvVelocite.magnitude());
+            }
+
+            Journal journal = new Journal(nouvVelocite, this.getCentre());
             journauxLances.add(journal);
-
         }
-        zPressedLastFrame = zPressed;
-        xPressedLastFrame = xPressed;
+
     }
 
-    public void uptadeJournaux(double deltaTemps) {
+    public void updateJournaux(double deltaTemps) {
 
-        lancerJournal();
+        boolean zPressed = Input.isKeyPressed(KeyCode.Z);
+        boolean xPressed = Input.isKeyPressed(KeyCode.X);
+
+        //Lancer un journal toutes les 0,5sec
+        tempsEcouleLance += deltaTemps;
+        if (tempsEcouleLance >= 0.5 && (zPressed || xPressed)) {
+            lancerJournal();
+            tempsEcouleLance = 0;
+        }
 
         for (Journal j : journauxLances) {
             j.update(deltaTemps);
         }
 
+    }
+
+    //Supprimer journaux en dehors de la scène
+    public void supprimerJournaux(Camera camera){
+
+        Point2D posCam = camera.getPositionCamera();
+        double limiteGauche = posCam.getX();
+        double limiteDroite = posCam.getX() + MainJavaFX.WIDTH;
+        double limiteBas = MainJavaFX.HEIGHT;
+
+        journauxLances.removeIf(j ->
+                j.position.getX() > limiteDroite ||
+                        j.position.getX() < limiteGauche ||
+                        j.position.getY() > limiteBas
+        );
     }
 
     @Override

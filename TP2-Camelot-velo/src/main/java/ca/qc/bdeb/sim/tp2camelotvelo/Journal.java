@@ -6,7 +6,8 @@ import javafx.scene.image.Image;
 
 public class Journal extends ObjetDuJeu {
 
-    private double masse;
+    //Variable globale, vérifier si on a le droit
+    public static double masse = 1 + Math.random();
 
     public Journal(Point2D velocite, Point2D position) {
 
@@ -18,7 +19,7 @@ public class Journal extends ObjetDuJeu {
         images = new Image[]{new Image("journal.png")};
 
         acceleration = new Point2D(0, 1500);
-        masse = 1 + Math.random();
+
     }
 
     @Override
@@ -34,5 +35,5 @@ public class Journal extends ObjetDuJeu {
 
         context.drawImage(images[0], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
     }
-    
+
 }
