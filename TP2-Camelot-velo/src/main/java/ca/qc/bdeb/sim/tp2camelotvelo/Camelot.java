@@ -160,6 +160,10 @@ public class Camelot extends ObjetDuJeu {
         );
     }
 
+    public ArrayList<Journal> getJournauxLances() {
+        return journauxLances;
+    }
+
     @Override
     public void draw(GraphicsContext context, Camera camera) {
         Point2D posEcran = camera.coordoEcran(position);
