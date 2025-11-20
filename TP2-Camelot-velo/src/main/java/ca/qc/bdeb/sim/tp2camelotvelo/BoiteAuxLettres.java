@@ -36,20 +36,33 @@ public class BoiteAuxLettres extends ObjetDuJeu {
         context.drawImage(images[0], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
     }
 
-    public boolean collisionAvecJournal() {
+    public boolean collisionAvecJournal(Journal j) {
+
+        boolean overlapX =
+                (j.getDroite() > this.getGauche()) &&
+                        (j.getGauche() < this.getDroite());
+
+        boolean overlapY =
+                (j.getBas() > this.getHaut()) &&
+                        (j.getHaut() < this.getBas());
+
+        boolean collision = overlapX && overlapY;
+
+        if (!collision) {
+            return false;
+        }
+
         if (!dejaTouchee) {
             dejaTouchee = true;
 
             if (abonne) {
                 images[0] = imgBoiteVerte;
-                return true; //donc si la maison est abonne alors l utilisateur gagne 1$
             } else {
                 images[0] = imgBoiteRouge;
-                return false; //utilisateur gagne rien
 
             }
         }
-        return false;// puisque boite est deja toucher utilisateur gagne rien
+        return true; //tjrs supprimer journal
     }
 }
 
