@@ -7,9 +7,9 @@ import javafx.scene.input.KeyCode;
 
 import java.util.ArrayList;
 
-public class Camelot extends ObjetDuJeu {
+public class Camelot extends ObjetInteractif {
 
-    private int i = 0;
+    private int indexImage = 0;
     private double tempsEcoule = 0;
     protected boolean toucheLeSol;
     private final ArrayList<Journal> journauxLances = new ArrayList<>();
@@ -37,7 +37,7 @@ public class Camelot extends ObjetDuJeu {
 
         tempsEcoule += deltaTemps;
 
-        i = (int) Math.floor(tempsEcoule * 4) % images.length;
+        indexImage = (int) Math.floor(tempsEcoule * 4) % images.length;
 
         double vx = accelerer(deltaTemps);
 
@@ -146,7 +146,7 @@ public class Camelot extends ObjetDuJeu {
     }
 
     //Supprimer journaux en dehors de la scène
-    public void supprimerJournaux(Camera camera){
+    public void supprimerJournaux(Camera camera) {
 
         Point2D posCam = camera.getPositionCamera();
         double limiteGauche = posCam.getX();
@@ -165,15 +165,17 @@ public class Camelot extends ObjetDuJeu {
     }
 
     @Override
-    public void draw(GraphicsContext context, Camera camera) {
-        Point2D posEcran = camera.coordoEcran(position);
-
-        context.drawImage(images[i], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
-
+    protected void drawExtras(GraphicsContext context, Camera camera) {
         for (Journal j : journauxLances) {
             j.draw(context, camera);
         }
     }
+
+    @Override
+    protected Image getImageToDraw() {
+        return images[indexImage];
+    }
+
 
 }
 

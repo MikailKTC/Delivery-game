@@ -1,10 +1,9 @@
 package ca.qc.bdeb.sim.tp2camelotvelo;
 
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class BoiteAuxLettres extends ObjetDuJeu {
+public class BoiteAuxLettres extends ObjetInteractif {
 
     boolean abonne;
     Image imgBoiteNormal;
@@ -26,14 +25,6 @@ public class BoiteAuxLettres extends ObjetDuJeu {
     @Override
     public void update(double deltaTemps) {
 
-    }
-
-    @Override
-    public void draw(GraphicsContext context, Camera camera) {
-
-        Point2D posEcran = camera.coordoEcran(position);
-
-        context.drawImage(images[0], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
     }
 
     public boolean collisionAvecJournal(Journal j) {
@@ -64,5 +55,6 @@ public class BoiteAuxLettres extends ObjetDuJeu {
         }
         return true; //tjrs supprimer journal
     }
+
 }
 

@@ -1,10 +1,9 @@
 package ca.qc.bdeb.sim.tp2camelotvelo;
 
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Journal extends ObjetDuJeu {
+public class Journal extends ObjetInteractif {
 
     //Variable globale, vérifier si on a le droit
     public static double masse = 1 + Math.random();
@@ -27,13 +26,6 @@ public class Journal extends ObjetDuJeu {
 
         super.updatePhysique(deltaTemps);
 
-    }
-
-    @Override
-    public void draw(GraphicsContext context, Camera camera) {
-        Point2D posEcran = camera.coordoEcran(position);
-
-        context.drawImage(images[0], posEcran.getX(), posEcran.getY(), taille.getX(), taille.getY());
     }
 
 }

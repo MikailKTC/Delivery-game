@@ -4,18 +4,13 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public abstract class ObjetDuJeu {
+public abstract class ObjetInteractif extends Objet{
 
-    protected Point2D position;
     protected Point2D velocite;
     protected Point2D acceleration;
-    protected Point2D taille;
-    protected Image[] images;
 
-
-    public ObjetDuJeu(Point2D position, double largeur, double hauteur) {
-        this.position = position;
-        this.taille = new Point2D(largeur, hauteur);
+    public ObjetInteractif(Point2D position,double largeur, double hauteur) {
+        super(position,largeur,hauteur);
         this.velocite = new Point2D(0, 0);
         this.acceleration = new Point2D(0, 0);
     }
@@ -26,8 +21,6 @@ public abstract class ObjetDuJeu {
     }
 
     public abstract void update(double deltaTemps);
-
-    public abstract void draw(GraphicsContext context, Camera camera);
 
     public double getHaut() {
         return position.getY();

@@ -1,20 +1,19 @@
 package ca.qc.bdeb.sim.tp2camelotvelo;
 
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Fenetre extends ObjetDuJeu{
+public class Fenetre extends ObjetInteractif {
 
     private Image imageNormale;
     private Image imageBrisee;
     private boolean estBrisee;
 
     public Fenetre(Point2D position) {
-        super(position, 41, 41);
+        super(position, 150, 120);
 
         imageNormale = new Image("fenetre.png");
-        imageBrisee = new Image("fenetre-brisee.png");
+        imageBrisee = new Image("fenetre-brisee-rouge.png");
 
         images = new Image[]{ imageNormale };
 
@@ -23,11 +22,6 @@ public class Fenetre extends ObjetDuJeu{
 
     @Override
     public void update(double deltaTemps) {
-
-    }
-
-    @Override
-    public void draw(GraphicsContext context, Camera camera) {
 
     }
 
