@@ -5,20 +5,25 @@ import javafx.scene.image.Image;
 
 public class Fenetre extends ObjetInteractif {
 
+    private boolean abonne;
     private Image imageNormale;
-    private Image imageBrisee;
+    private Image imageBriseeRouge;
+    private Image imageBriseeVerte;
     private boolean estBrisee;
 
-    public Fenetre(Point2D position) {
+    public Fenetre(Point2D position, boolean abonnee) {
         super(position, 150, 120);
 
         imageNormale = new Image("fenetre.png");
-        imageBrisee = new Image("fenetre-brisee-rouge.png");
+        imageBriseeRouge = new Image("fenetre-brisee-rouge.png");
+        imageBriseeVerte = new Image("fenetre-brisee-vert.png");
 
+        this.abonne = abonne;
         images = new Image[]{ imageNormale };
 
         estBrisee = false;
     }
+
 
     @Override
     public void update(double deltaTemps) {
@@ -43,8 +48,14 @@ public class Fenetre extends ObjetInteractif {
 
         if (!estBrisee) {
             estBrisee = true;
-            images[0] = imageBrisee;
+            if (abonne) {
+                images[0] = imageBriseeVerte;
+            } else {
+                images[0] = imageBriseeRouge;
+            }
         }
-        return true; //tjrs supprimer journal
+            return true; //tjrs supprimer journal
+
+
     }
 }

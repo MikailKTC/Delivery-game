@@ -28,7 +28,8 @@ public class Maison extends Objet {
 
         int nbFenetres = (int) (Math.random() * 3); // 0, 1 ou 2
         for (int i = 0; i < nbFenetres; i++) {
-            fenetres.add(new Fenetre(new Point2D(positionX + 300 * (i + 1), 50)));
+            Fenetre fenetre = new Fenetre(new Point2D(positionX + 300 * (i + 1), 50),abonnee);
+            fenetres.add(fenetre);
         }
 
     }
