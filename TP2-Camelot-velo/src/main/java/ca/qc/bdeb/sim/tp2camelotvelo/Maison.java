@@ -11,8 +11,8 @@ public class Maison extends Objet {
 
     private int adresse;
     private boolean abonnee;
-    private BoiteAuxLettres boite;
-    private ArrayList<Fenetre> fenetres = new ArrayList<>();
+    protected BoiteAuxLettres boite;
+    protected ArrayList<Fenetre> fenetres = new ArrayList<>();
 
     public Maison(int positionX) {
         super(new Point2D(positionX, MainJavaFX.HEIGHT - 200), 150, 200); //Taille arbitraire

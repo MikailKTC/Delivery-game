@@ -21,6 +21,33 @@ public class Partie {
         camelot.update(deltaTemps);
         camera.suivreCamelot(camelot);
 
+        ArrayList<Journal> journaux = camelot.getJournauxLances();
+        ArrayList<Journal> journauxASupprimer = new ArrayList<>();
+
+        for (Journal j : journaux) {
+
+            boolean touche = false;
+
+            for (Maison m : maisons) {
+                if (m.boite.collisionAvecJournal(j)) {
+                    touche = true;
+                }
+
+                for (Fenetre f : m.fenetres) {
+                    if (f.collisionAvecJournal(j)) {
+                        touche = true;
+
+                    }
+                }
+            }
+
+            if (touche) {
+                journauxASupprimer.add(j);
+            }
+
+        }
+        journaux.removeAll(journauxASupprimer);
+
     }
 
     public void draw(GraphicsContext context) {
@@ -29,7 +56,7 @@ public class Partie {
 
         drawBrique(context);
 
-        drawMaisons(context,camera);
+        drawMaisons(context, camera);
 
         camelot.draw(context, camera);
     }
@@ -59,15 +86,17 @@ public class Partie {
     }
 
     public void drawMaisons(GraphicsContext context, Camera camera) {
-        for(Maison maison: maisons){
-            maison.draw(context,camera);
+        for (Maison maison : maisons) {
+            maison.draw(context, camera);
         }
     }
-    public void ajouterMaisons(){
+
+    public void ajouterMaisons() {
         int posX = 1300;
         for (int i = 0; i < 12; i++) {
             maisons.add(new Maison(posX));
             posX += 1300;
-        }    }
+        }
+    }
 
 }

@@ -24,6 +24,11 @@ public class Journal extends ObjetInteractif {
     @Override
     public void update(double deltaTemps) {
 
+        double max = 1500;
+        if (velocite.magnitude() > max) {
+            velocite = velocite.multiply(max / velocite.magnitude());
+        }
+
         super.updatePhysique(deltaTemps);
 
     }
