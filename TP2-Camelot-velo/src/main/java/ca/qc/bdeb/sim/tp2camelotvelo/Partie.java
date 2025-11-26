@@ -1,5 +1,6 @@
 package ca.qc.bdeb.sim.tp2camelotvelo;
 
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
@@ -21,6 +22,10 @@ public class Partie {
         camelot.update(deltaTemps);
         camera.suivreCamelot(camelot);
 
+//        if(camelot.position.getX()<=16900){
+//            Platform.exit();
+//        }
+//
         ArrayList<Journal> journaux = camelot.getJournauxLances();
         ArrayList<Journal> journauxASupprimer = new ArrayList<>();
 
@@ -96,7 +101,10 @@ public class Partie {
         for (int i = 0; i < 12; i++) {
             maisons.add(new Maison(posX));
             posX += 1300;
+
         }
+
+
     }
 
 }
