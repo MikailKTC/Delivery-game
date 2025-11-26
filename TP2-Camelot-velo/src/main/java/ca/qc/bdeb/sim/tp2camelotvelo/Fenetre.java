@@ -9,9 +9,9 @@ public class Fenetre extends ObjetInteractif {
     private Image imageNormale;
     private Image imageBriseeRouge;
     private Image imageBriseeVerte;
-    private boolean estBrisee;
+    protected boolean estBrisee;
 
-    public Fenetre(Point2D position, boolean abonnee) {
+    public Fenetre(Point2D position, boolean abonne) {
         super(position, 150, 120);
 
         imageNormale = new Image("fenetre.png");
@@ -48,7 +48,7 @@ public class Fenetre extends ObjetInteractif {
 
         if (!estBrisee) {
             estBrisee = true;
-            if (abonne) {
+            if (!abonne) {
                 images[0] = imageBriseeVerte;
             } else {
                 images[0] = imageBriseeRouge;

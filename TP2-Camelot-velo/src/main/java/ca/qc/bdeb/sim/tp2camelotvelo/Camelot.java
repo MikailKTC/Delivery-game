@@ -125,6 +125,8 @@ public class Camelot extends ObjetInteractif {
             journauxLances.add(journal);
         }
 
+
+
     }
 
     public void updateJournaux(double deltaTemps) {

@@ -10,7 +10,7 @@ public class Maison extends Objet {
 
 
     private int adresse;
-    private boolean abonnee;
+    protected boolean abonnee;
     protected BoiteAuxLettres boite;
     protected ArrayList<Fenetre> fenetres = new ArrayList<>();
 
@@ -20,6 +20,8 @@ public class Maison extends Objet {
         images = new Image[]{
                 new Image("porte.png")
         };
+
+        abonnee = Math.random() < 0.5;
 
         double hauteurMin = 0.2 * MainJavaFX.HEIGHT;
         double hauteurMax = 0.7 * MainJavaFX.HEIGHT;
