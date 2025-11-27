@@ -14,6 +14,7 @@ public class Camelot extends ObjetInteractif {
     protected boolean toucheLeSol;
     private final ArrayList<Journal> journauxLances = new ArrayList<>();
     private double tempsEcouleLance = 0;
+    private Partie partie;
 
 
     public Camelot() {
@@ -125,6 +126,10 @@ public class Camelot extends ObjetInteractif {
             journauxLances.add(journal);
         }
 
+        if(partie!=null) {
+            partie.diminuerJournaux();
+        }
+
 
 
     }
@@ -178,6 +183,10 @@ public class Camelot extends ObjetInteractif {
         return images[indexImage];
     }
 
+
+    public void setPartie(Partie partie) {
+        this.partie = partie;
+    }
 
 }
 

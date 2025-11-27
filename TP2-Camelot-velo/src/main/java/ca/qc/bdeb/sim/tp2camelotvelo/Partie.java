@@ -22,6 +22,7 @@ public class Partie {
     private Image imgMaison = new Image("icone-maison.png");
 
     public Partie() {
+        camelot.setPartie(this);
         chargerNiveau(1);
     }
 
@@ -68,7 +69,6 @@ public class Partie {
 
             if (touche) {
                 journauxASupprimer.add(j);
-                journauxRestants--;
             }
 
         }
@@ -186,6 +186,10 @@ public class Partie {
             posX += 1300;
 
         }
+    }
+
+    public void diminuerJournaux() {
+        journauxRestants--;
     }
 
 }
