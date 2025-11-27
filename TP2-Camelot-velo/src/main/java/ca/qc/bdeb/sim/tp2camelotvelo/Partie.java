@@ -37,16 +37,18 @@ public class Partie {
 
     public void update(double deltaTemps, GraphicsContext context) {
 
+        //Si on est en changement de niveau, dessiner l'écran de transition
         if (enTransitionNiveau) {
             compteurTransition += deltaTemps;
-            // Afficher le texte Niveau X
+
             drawTransitionNiveau(context);
 
+            //Apres 3 secondes, on arrete de dessiner et commence le niveau
             if (compteurTransition >= 3) {
                 chargerNiveau(niveauActuel + 1); // passe au niveau suivant
                 enTransitionNiveau = false;
             }
-            return; // ne rien faire d'autre pendant la transition
+            return;
         }
 
         camelot.supprimerJournaux(camera);
@@ -55,7 +57,7 @@ public class Partie {
 
         traiterCollisionsJournaux();
 
-        //Charger prochain niveau
+        //Vérifier a chaque frame que les conditions de fin de niveau sont remplies ou non
         conditionPourChargerNiveau();
 
         boolean zPressed = Input.isKeyPressed(KeyCode.Z);
@@ -201,6 +203,7 @@ public class Partie {
         context.fillText(sb.toString(), 210 + 30 + 5, 30);
     }
 
+    //Méthode pour dessiner la transition de niveau
     private void drawTransitionNiveau(GraphicsContext context) {
 
             context.setFill(Color.BLACK);
@@ -255,7 +258,6 @@ public class Partie {
     }
 
     //Empecher de lancer un journal s'il n'en reste plus
-
     private void lancerJournalCamelot() {
         if (journauxRestants > 0) {
             camelot.lancerJournal();
