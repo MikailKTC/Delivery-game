@@ -4,11 +4,16 @@ import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
 
 public class Partie {
+
+    private static final int LIMITE_NIVEAU = 16900;
+
     private Camelot camelot = new Camelot();
     private ArrayList<Maison> maisons = new ArrayList<>();
     private Camera camera = new Camera();
@@ -16,64 +21,116 @@ public class Partie {
     private int niveauActuel = 1;
     private int argent = 0;
     private int journauxRestants = 0;
+    private boolean chargerProchainNiveau = false;
+
+    private double tempsEcouleLance = 0;
+    private boolean enTransitionNiveau = false;
+    private double compteurTransition = 0;
 
     private Image imgJournal = new Image("icone-journal.png");
     private Image imgDollar = new Image("icone-dollar.png");
     private Image imgMaison = new Image("icone-maison.png");
 
     public Partie() {
-        camelot.setPartie(this);
-        chargerNiveau(1);
+
     }
 
-    public void update(double deltaTemps) {
+    public void update(double deltaTemps, GraphicsContext context) {
+
+        if (enTransitionNiveau) {
+            compteurTransition += deltaTemps;
+            // Afficher le texte Niveau X
+            drawTransitionNiveau(context);
+
+            if (compteurTransition >= 3) {
+                chargerNiveau(niveauActuel + 1); // passe au niveau suivant
+                enTransitionNiveau = false;
+            }
+            return; // ne rien faire d'autre pendant la transition
+        }
 
         camelot.supprimerJournaux(camera);
         camelot.update(deltaTemps);
         camera.suivreCamelot(camelot);
 
-       /* if (journauxRestants <= 0 && camelot.getJournauxLances().isEmpty()) {
-            chargerNiveau(niveauActuel + 1);
-        }*/ //petit affaire avec ce bout de code c est que quand le camelot atteint 0 le niveau se recharge right away donc
-        //ca fait recommencer le niveau sans warning. faut fix ca
+        traiterCollisionsJournaux();
 
+        //Charger prochain niveau
+        conditionPourChargerNiveau();
+
+        boolean zPressed = Input.isKeyPressed(KeyCode.Z);
+        boolean xPressed = Input.isKeyPressed(KeyCode.X);
+
+        //Lancer un journal toutes les 0,5sec
+        tempsEcouleLance += deltaTemps;
+        if (tempsEcouleLance >= 0.5 && (zPressed || xPressed)) {
+            lancerJournalCamelot();
+            tempsEcouleLance = 0;
+        }
+
+    }
+
+    private void traiterCollisionsJournaux() {
         ArrayList<Journal> journaux = camelot.getJournauxLances();
         ArrayList<Journal> journauxASupprimer = new ArrayList<>();
 
-        for (Journal j : journaux) {
+        for (Journal journal : journaux) {
 
-            boolean touche = false;
+            boolean collision = false;
 
-            for (Maison m : maisons) {
-                if (m.boite.collisionAvecJournal(j)) {
-                    if (m.boite.abonne && !m.boite.dejaTouchee) {
-                        argent += 1;
-                    }
-                    touche = true;
+            //Collision boite aux lettres
+            for (Maison maison : maisons) {
+                if (gererCollisionBoite(maison, journal)) {
+                    collision = true;
+                    break;
                 }
 
-                for (Fenetre f : m.fenetres) {
-                    if (f.collisionAvecJournal(j)) {
-                        if (!f.estBrisee) {
-                            if (m.abonnee) {
-                                argent -= 2;
-                            } else {
-                                argent += 2;
-                            }
-                        }
-                        touche = true;
+                //Collision fenetres
+                for (Fenetre fenetre : maison.fenetres) {
+                    if (gererCollisionFenetre(maison, fenetre, journal)) {
 
+                        collision = true;
+                        break;
                     }
                 }
+                if (collision) break; //Éviter de parcourir tous les objets si on a déja trouver une collision
             }
 
-            if (touche) {
-                journauxASupprimer.add(j);
+            if (collision) {
+                journauxASupprimer.add(journal);
             }
-
         }
-        journaux.removeAll(journauxASupprimer);
 
+        journaux.removeAll(journauxASupprimer);
+    }
+
+    private boolean gererCollisionBoite(Maison maison, Journal journal) {
+
+        if (maison.boite.collisionAvecJournal(journal)) {
+            if (maison.boite.abonne && !maison.boite.dejaTouchee) {
+                argent += 1;
+            }
+            maison.boite.changerCouleurBoite();
+            maison.boite.dejaTouchee = true;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean gererCollisionFenetre(Maison maison, Fenetre fenetre, Journal journal) {
+        if (fenetre.collisionAvecJournal(journal)) {
+            if (!fenetre.estBrisee) {
+                if (maison.abonnee) {
+                    argent -= 2;
+                } else {
+                    argent += 2;
+                }
+                fenetre.changerCouleurFenetre();
+                fenetre.estBrisee = true;
+            }
+            return true;
+        }
+        return false;
     }
 
     public void draw(GraphicsContext context) {
@@ -119,19 +176,19 @@ public class Partie {
     }
 
     public void drawHUD(GraphicsContext context) {
-        context.setFill(Color.BLACK);
+
+        context.setFill(Color.rgb(0, 0, 0, 0.5)); // Fourni par ChatGPT pour un fond transparent
         context.fillRect(0, 0, MainJavaFX.WIDTH, 40);
         context.setFill(Color.WHITE);
-        context.setFont(javafx.scene.text.Font.font(18));
+        context.setFont(javafx.scene.text.Font.font(20));
 
-        context.drawImage(imgJournal, 10, 10, 30, 30);
-        context.fillText("Journaux : " + journauxRestants, 50, 32);
+        context.drawImage(imgJournal, 30, 5, 30, 30);
+        context.fillText("" + journauxRestants, 70, 26);
 
-        context.drawImage(imgDollar, 200, 10, 30, 30);
-        context.fillText("Argent : " + argent + "$", 240, 32);
+        context.drawImage(imgDollar, 120, 7, 40, 25);
+        context.fillText(argent + "", 170, 26);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("Adresses abonnées : ");
+        StringBuilder sb = new StringBuilder(); //StringBuilder : Concaténer et modifier des String efficacement
 
         for (Maison m : maisons) {
             if (m.abonnee) {
@@ -139,57 +196,74 @@ public class Partie {
             }
         }
 
-        context.drawImage(imgMaison, 400, 10, 30, 30);
-        context.fillText(sb.toString(), 440, 32);
+        context.setTextAlign(TextAlignment.LEFT);
+        context.drawImage(imgMaison, 210, 5, 30, 30);
+        context.fillText(sb.toString(), 210 + 30 + 5, 30);
     }
 
-    /*public void ajouterMaisons() {
+    private void drawTransitionNiveau(GraphicsContext context) {
+
+            context.setFill(Color.BLACK);
+            context.fillRect(0, 0, MainJavaFX.WIDTH, MainJavaFX.HEIGHT);
+            context.setFill(Color.GREEN);
+            context.setFont(javafx.scene.text.Font.font(40));
+            context.setTextAlign(TextAlignment.CENTER);
+            context.fillText("Niveau " + niveauActuel, MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2);
+
+    }
+
+    public void ajouterMaisons() {
+
+        int adresse = 100 + (int) (Math.random() * 851); //Numéro entre 100 et 950
         int posX = 1300;
+
         for (int i = 0; i < 12; i++) {
-            maisons.add(new Maison(posX));
+
+            //J'ai supprimé la création des boites aux lettres et fenetre car elles sont déjà
+            //faites dans la classe Maison
+
+            Maison m = new Maison(posX, adresse);
+            maisons.add(m);
+
+            adresse += 2;
             posX += 1300;
-
         }
+    }
 
+    public void chargerNiveau(int numeroNiveau) {
+        niveauActuel = numeroNiveau;
 
-    }*/
-
-    public void chargerNiveau(int numero) {
-        niveauActuel = numero;
+        camelot = new Camelot();
         maisons.clear();
 
         journauxRestants += 12;
-        int adresse = 100 + (int) (Math.random() * 850);
 
-        int posX = 1300;
+        ajouterMaisons();
 
-        for (int i = 0; i < 12; i++) {
-            Maison m = new Maison(posX, adresse);
-            boolean estAbonnee = m.abonnee;
-            double hauteurMin = 0.2 * MainJavaFX.HEIGHT;
-            double hauteurMax = 0.7 * MainJavaFX.HEIGHT;
-            double yAleatoire = hauteurMin + Math.random() * (hauteurMax - hauteurMin);
+    }
 
-            m.boite = new BoiteAuxLettres(new Point2D(posX + 200, yAleatoire), estAbonnee);
+    //Changer de niveau uniquement si l'une des conditions est remplie
+    private void conditionPourChargerNiveau() {
 
-            int nbFenetres = (int) (Math.random() * 3);
-
-            for (int f = 0; f < nbFenetres; f++) {
-                Fenetre fenetre = new Fenetre(
-                        new Point2D(posX + 300 + 300 * f, 50), estAbonnee);
-
-                m.fenetres.add(fenetre);
-            }
-
-            maisons.add(m);
-            adresse += 2;
-            posX += 1300;
+        if ( !enTransitionNiveau &&
+                (journauxRestants <= 0 && camelot.getJournauxLances().isEmpty())
+                || camelot.getPosition().getX() >= LIMITE_NIVEAU) {
+            enTransitionNiveau = true;
+            compteurTransition = 0; // reset du compteur
 
         }
     }
 
-    public void diminuerJournaux() {
-        journauxRestants--;
+    //Empecher de lancer un journal s'il n'en reste plus
+
+    private void lancerJournalCamelot() {
+        if (journauxRestants > 0) {
+            camelot.lancerJournal();
+            journauxRestants--;
+        }
     }
 
+    public boolean isEnTransitionNiveau() {
+        return enTransitionNiveau;
+    }
 }

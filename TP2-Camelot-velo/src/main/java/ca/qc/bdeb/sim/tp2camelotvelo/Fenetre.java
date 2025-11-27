@@ -40,22 +40,17 @@ public class Fenetre extends ObjetInteractif {
                 (j.getBas() > this.getHaut()) &&
                         (j.getHaut() < this.getBas());
 
-        boolean collision = overlapX && overlapY;
+        return overlapX && overlapY;
 
-        if (!collision) {
-            return false;
-        }
-
+    }
+    public void changerCouleurFenetre(){
+        //Changer couleur des fenetres
         if (!estBrisee) {
-            estBrisee = true;
             if (!abonne) {
                 images[0] = imageBriseeVerte;
             } else {
                 images[0] = imageBriseeRouge;
             }
         }
-            return true; //tjrs supprimer journal
-
-
     }
 }

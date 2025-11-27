@@ -13,9 +13,6 @@ public class Camelot extends ObjetInteractif {
     private double tempsEcoule = 0;
     protected boolean toucheLeSol;
     private final ArrayList<Journal> journauxLances = new ArrayList<>();
-    private double tempsEcouleLance = 0;
-    private Partie partie;
-
 
     public Camelot() {
 
@@ -126,25 +123,9 @@ public class Camelot extends ObjetInteractif {
             journauxLances.add(journal);
         }
 
-        if(partie!=null) {
-            partie.diminuerJournaux();
-        }
-
-
-
     }
 
     public void updateJournaux(double deltaTemps) {
-
-        boolean zPressed = Input.isKeyPressed(KeyCode.Z);
-        boolean xPressed = Input.isKeyPressed(KeyCode.X);
-
-        //Lancer un journal toutes les 0,5sec
-        tempsEcouleLance += deltaTemps;
-        if (tempsEcouleLance >= 0.5 && (zPressed || xPressed)) {
-            lancerJournal();
-            tempsEcouleLance = 0;
-        }
 
         for (Journal j : journauxLances) {
             j.update(deltaTemps);
@@ -183,10 +164,6 @@ public class Camelot extends ObjetInteractif {
         return images[indexImage];
     }
 
-
-    public void setPartie(Partie partie) {
-        this.partie = partie;
-    }
 
 }
 

@@ -46,6 +46,8 @@ public abstract class ObjetInteractif extends Objet{
         return position;
     }
 
+
+
     public Point2D getTaille() {
         return taille;
     }

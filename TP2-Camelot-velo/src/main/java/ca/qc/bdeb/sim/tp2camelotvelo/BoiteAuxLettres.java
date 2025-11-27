@@ -37,14 +37,12 @@ public class BoiteAuxLettres extends ObjetInteractif {
                 (j.getBas() > this.getHaut()) &&
                         (j.getHaut() < this.getBas());
 
-        boolean collision = overlapX && overlapY;
+        return overlapX && overlapY;
 
-        if (!collision) {
-            return false;
-        }
+    }
+    public void changerCouleurBoite(){
 
         if (!dejaTouchee) {
-            dejaTouchee = true;
 
             if (abonne) {
                 images[0] = imgBoiteVerte;
@@ -53,7 +51,6 @@ public class BoiteAuxLettres extends ObjetInteractif {
 
             }
         }
-        return true; //tjrs supprimer journal
     }
 
 }

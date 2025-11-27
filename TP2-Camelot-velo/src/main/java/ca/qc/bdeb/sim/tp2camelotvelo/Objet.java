@@ -33,4 +33,8 @@ public abstract class Objet {
 
     //Draw spécifiques à certaines classes
     protected void drawExtras(GraphicsContext context, Camera camera) { }
+
+    public void setPosition(Point2D position) {
+        this.position = position;
+    }
 }

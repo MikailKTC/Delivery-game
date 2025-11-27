@@ -7,6 +7,7 @@ public class Journal extends ObjetInteractif {
 
     //Variable globale, vérifier si on a le droit
     public static double masse = 1 + Math.random();
+    private boolean compteurDejaDecremente = false; //Compteur qui permet de supprimer un journal du joueur
 
     public Journal(Point2D velocite, Point2D position) {
 
@@ -33,4 +34,11 @@ public class Journal extends ObjetInteractif {
 
     }
 
+    public boolean isCompteurDejaDecremente() {
+        return compteurDejaDecremente;
+    }
+
+    public void setCompteurDejaDecremente(boolean compteurDejaDecremente) {
+        this.compteurDejaDecremente = compteurDejaDecremente;
+    }
 }

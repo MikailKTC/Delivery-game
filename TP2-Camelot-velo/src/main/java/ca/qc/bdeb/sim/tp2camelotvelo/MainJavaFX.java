@@ -42,8 +42,11 @@ public class MainJavaFX extends Application {
             @Override
             public void handle(long temps) {
                 double deltaTemps = (temps - dernierTemps) * 1e-9;
-                partie.update(deltaTemps);
-                partie.draw(context);
+                partie.update(deltaTemps, context);
+                //Ne pas dessiner si on est en changement de niveau
+                if (!partie.isEnTransitionNiveau()) {
+                    partie.draw(context);
+                }
                 dernierTemps = temps;
             }
         };
@@ -51,6 +54,7 @@ public class MainJavaFX extends Application {
 
         stage.setResizable(false);
 
+        //Logo du jeu
         Image icon = new Image("journal.png");
         stage.getIcons().add(icon);
         stage.show();
