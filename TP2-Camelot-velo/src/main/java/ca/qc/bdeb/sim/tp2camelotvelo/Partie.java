@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,10 @@ public class Partie {
     private int argent = 0;
     private int journauxRestants = 0;
 
+    private Image imgJournal = new Image("icone-journal.png");
+    private Image imgDollar = new Image("icone-dollar.png");
+    private Image imgMaison = new Image("icone-maison.png");
+
     public Partie() {
         chargerNiveau(1);
     }
@@ -26,9 +31,10 @@ public class Partie {
         camelot.update(deltaTemps);
         camera.suivreCamelot(camelot);
 
-        if (journauxRestants <= 0 && camelot.getJournauxLances().isEmpty()) {
+       /* if (journauxRestants <= 0 && camelot.getJournauxLances().isEmpty()) {
             chargerNiveau(niveauActuel + 1);
-        }
+        }*/ //petit affaire avec ce bout de code c est que quand le camelot atteint 0 le niveau se recharge right away donc
+        //ca fait recommencer le niveau sans warning. faut fix ca
 
         ArrayList<Journal> journaux = camelot.getJournauxLances();
         ArrayList<Journal> journauxASupprimer = new ArrayList<>();
@@ -79,6 +85,7 @@ public class Partie {
         drawMaisons(context, camera);
 
         camelot.draw(context, camera);
+        drawHUD(context);
     }
 
     public void drawBrique(GraphicsContext context) {
@@ -111,6 +118,31 @@ public class Partie {
         }
     }
 
+    public void drawHUD(GraphicsContext context) {
+        context.setFill(Color.BLACK);
+        context.fillRect(0, 0, MainJavaFX.WIDTH, 40);
+        context.setFill(Color.WHITE);
+        context.setFont(javafx.scene.text.Font.font(18));
+
+        context.drawImage(imgJournal, 10, 10, 30, 30);
+        context.fillText("Journaux : " + journauxRestants, 50, 32);
+
+        context.drawImage(imgDollar, 200, 10, 30, 30);
+        context.fillText("Argent : " + argent + "$", 240, 32);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Adresses abonnées : ");
+
+        for (Maison m : maisons) {
+            if (m.abonnee) {
+                sb.append(m.adresse).append("  ");
+            }
+        }
+
+        context.drawImage(imgMaison, 400, 10, 30, 30);
+        context.fillText(sb.toString(), 440, 32);
+    }
+
     /*public void ajouterMaisons() {
         int posX = 1300;
         for (int i = 0; i < 12; i++) {
@@ -132,7 +164,7 @@ public class Partie {
         int posX = 1300;
 
         for (int i = 0; i < 12; i++) {
-            Maison m = new Maison(posX);
+            Maison m = new Maison(posX, adresse);
             boolean estAbonnee = m.abonnee;
             double hauteurMin = 0.2 * MainJavaFX.HEIGHT;
             double hauteurMax = 0.7 * MainJavaFX.HEIGHT;
