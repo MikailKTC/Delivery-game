@@ -36,6 +36,8 @@ public class MainJavaFX extends Application {
         stage.setTitle("Camelot à vélo");
         stage.setScene(scene);
 
+        partie.chargerNiveau(1);
+        partie.demarrerTransition();
         var timer = new AnimationTimer() {
             long dernierTemps = System.nanoTime();
 

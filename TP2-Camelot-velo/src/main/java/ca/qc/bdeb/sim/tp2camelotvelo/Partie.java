@@ -35,9 +35,7 @@ public class Partie {
     private Image imgMaison = new Image("icone-maison.png");
 
     public Partie() {
-        //afficher l ecran niveau 1 au debut de la partie
-        enTransitionNiveau = true;
-        compteurTransition = 0;
+
     }
 
     public void update(double deltaTemps, GraphicsContext context) {
@@ -49,11 +47,9 @@ public class Partie {
 
             //apres 3 secondes, on arrete de dessiner et recommence au niveau 1
             if (timerFinPartie >= 3) {
-                argent = 0;
-                journauxRestants = 0;
-                niveauActuel = 1;
-                partieFinie = false;
+                resetPartie();
                 chargerNiveau(1);
+                demarrerTransition();
             }
             return;
         }
@@ -66,7 +62,6 @@ public class Partie {
 
             //Apres 3 secondes, on arrete de dessiner et commence le niveau
             if (compteurTransition >= 3) {
-                chargerNiveau(niveauActuel + 1); // passe au niveau suivant
                 enTransitionNiveau = false;
             }
             return;
@@ -269,6 +264,18 @@ public class Partie {
         }
     }
 
+    public void demarrerTransition() {
+        enTransitionNiveau = true;
+        compteurTransition = 0;
+    }
+
+    public void resetPartie() {
+        niveauActuel = 1;
+        argent = 0;
+        journauxRestants = 0;
+        partieFinie = false;
+    }
+
     public void chargerNiveau(int numeroNiveau) {
         niveauActuel = numeroNiveau;
 
@@ -297,14 +304,16 @@ public class Partie {
 
             partieFinie = true;
             timerFinPartie = 0;
+            return;
         }
 
         //condition pour prochain niveau
         if (!enTransitionNiveau &&
                 camelot.getPosition().getX() >= LIMITE_NIVEAU) {
 
-            enTransitionNiveau = true;
-            compteurTransition = 0;
+            niveauActuel++;
+            chargerNiveau(niveauActuel);
+            demarrerTransition();
         }
     }
 
