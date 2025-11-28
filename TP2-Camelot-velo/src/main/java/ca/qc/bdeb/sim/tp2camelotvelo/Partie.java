@@ -27,15 +27,36 @@ public class Partie {
     private boolean enTransitionNiveau = false;
     private double compteurTransition = 0;
 
+    private boolean partieFinie = false;
+    private double timerFinPartie = 0;
+
     private Image imgJournal = new Image("icone-journal.png");
     private Image imgDollar = new Image("icone-dollar.png");
     private Image imgMaison = new Image("icone-maison.png");
 
     public Partie() {
-
+        //afficher l ecran niveau 1 au debut de la partie
+        enTransitionNiveau = true;
+        compteurTransition = 0;
     }
 
     public void update(double deltaTemps, GraphicsContext context) {
+
+        //Si la partie fini, dessiner l ecran de fin de partie
+        if (partieFinie) {
+            timerFinPartie += deltaTemps;
+            drawEcranFin(context);
+
+            //apres 3 secondes, on arrete de dessiner et recommence au niveau 1
+            if (timerFinPartie >= 3) {
+                argent = 0;
+                journauxRestants = 0;
+                niveauActuel = 1;
+                partieFinie = false;
+                chargerNiveau(1);
+            }
+            return;
+        }
 
         //Si on est en changement de niveau, dessiner l'écran de transition
         if (enTransitionNiveau) {
@@ -215,6 +236,21 @@ public class Partie {
 
     }
 
+    private void drawEcranFin(GraphicsContext context) {
+        context.setFill(Color.BLACK);
+        context.fillRect(0, 0, MainJavaFX.WIDTH, MainJavaFX.HEIGHT);
+
+        context.setTextAlign(TextAlignment.CENTER);
+        context.setFont(javafx.scene.text.Font.font(40));
+
+        context.setFill(Color.RED);
+        context.fillText("Rupture de stocks", MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2 - 30);
+
+        context.setFill(Color.GREEN);
+        context.fillText("Argent collecté : " + argent + "$",
+                MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2 + 30);
+    }
+
     public void ajouterMaisons() {
 
         int adresse = 100 + (int) (Math.random() * 851); //Numéro entre 100 et 950
@@ -239,21 +275,36 @@ public class Partie {
         camelot = new Camelot();
         maisons.clear();
 
+        if(numeroNiveau ==1){
+            journauxRestants = 12;
+        } else {
         journauxRestants += 12;
+        }
 
         ajouterMaisons();
 
+        enTransitionNiveau = true;
+        compteurTransition = 0;
     }
 
     //Changer de niveau uniquement si l'une des conditions est remplie
     private void conditionPourChargerNiveau() {
 
-        if ( !enTransitionNiveau &&
-                (journauxRestants <= 0 && camelot.getJournauxLances().isEmpty())
-                || camelot.getPosition().getX() >= LIMITE_NIVEAU) {
-            enTransitionNiveau = true;
-            compteurTransition = 0; // reset du compteur
+        //condition pour fin de la partie
+        if (!enTransitionNiveau &&
+                journauxRestants <= 0 &&
+                camelot.getJournauxLances().isEmpty()) {
 
+            partieFinie = true;
+            timerFinPartie = 0;
+        }
+
+        //condition pour prochain niveau
+        if (!enTransitionNiveau &&
+                camelot.getPosition().getX() >= LIMITE_NIVEAU) {
+
+            enTransitionNiveau = true;
+            compteurTransition = 0;
         }
     }
 
@@ -268,4 +319,8 @@ public class Partie {
     public boolean isEnTransitionNiveau() {
         return enTransitionNiveau;
     }
+    public boolean isPartieFinie() {
+        return partieFinie;
+    }
 }
+

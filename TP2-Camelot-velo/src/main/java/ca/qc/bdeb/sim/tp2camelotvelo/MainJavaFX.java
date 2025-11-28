@@ -44,7 +44,7 @@ public class MainJavaFX extends Application {
                 double deltaTemps = (temps - dernierTemps) * 1e-9;
                 partie.update(deltaTemps, context);
                 //Ne pas dessiner si on est en changement de niveau
-                if (!partie.isEnTransitionNiveau()) {
+                if (!partie.isEnTransitionNiveau() && !partie.isPartieFinie()) {
                     partie.draw(context);
                 }
                 dernierTemps = temps;
