@@ -16,6 +16,7 @@ public class Partie {
 
     private Camelot camelot = new Camelot();
     private ArrayList<Maison> maisons = new ArrayList<>();
+    private ArrayList<ParticuleChargee> particules = new ArrayList<>();
     private Camera camera = new Camera();
     private Image background = new Image("brique.png");
     private int niveauActuel = 1;
@@ -161,8 +162,13 @@ public class Partie {
 
         drawMaisons(context, camera);
 
+        drawParticules(context, camera);
+
+
         camelot.draw(context, camera);
+
         drawHUD(context);
+
         if (modeDebug) {
             drawDebug(context);
         }
@@ -195,6 +201,12 @@ public class Partie {
     public void drawMaisons(GraphicsContext context, Camera camera) {
         for (Maison maison : maisons) {
             maison.draw(context, camera);
+        }
+    }
+
+    public void drawParticules(GraphicsContext context, Camera camera) {
+        for (ParticuleChargee p : particules) {
+            p.drawExtras(context, camera);
         }
     }
 
@@ -296,6 +308,19 @@ public class Partie {
         }
     }
 
+    public void ajouterParticules() {
+        int n = Math.min((niveauActuel - 1) * 30, 400);
+
+        for (int i = 0; i < n; i++) {
+
+            double x = Math.random() * LIMITE_NIVEAU;
+            double y = Math.random() * MainJavaFX.HEIGHT;
+
+            ParticuleChargee p = new ParticuleChargee(new Point2D(x, y));
+            particules.add(p);
+        }
+    }
+
     public void demarrerTransition() {
         enTransitionNiveau = true;
         compteurTransition = 0;
@@ -313,6 +338,8 @@ public class Partie {
 
         camelot = new Camelot();
         maisons.clear();
+        particules.clear();
+
 
         if (numeroNiveau == 1) {
             journauxRestants = 12;
@@ -321,6 +348,8 @@ public class Partie {
         }
 
         ajouterMaisons();
+        ajouterParticules();
+
 
         enTransitionNiveau = true;
         compteurTransition = 0;
