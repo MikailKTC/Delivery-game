@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -26,7 +27,30 @@ public class MainJavaFX extends Application {
         var scene = new Scene(root, WIDTH, HEIGHT);
         scene.setFill(Color.BLACK);
 
-        scene.setOnKeyPressed(e -> Input.setKeyPressed(e.getCode(), true));
+        scene.setOnKeyPressed(e -> {
+            Input.setKeyPressed(e.getCode(), true);
+
+            if (e.getCode() == KeyCode.ESCAPE) {
+                stage.close();
+            }
+
+            if (e.getCode() == KeyCode.Q) {
+                partie.ajouterJournauxDebug();
+            }
+
+            if (e.getCode() == KeyCode.K) {
+                partie.setJournauxZeroDebug();
+            }
+
+            if (e.getCode() == KeyCode.I) {
+                partie.prochainNiveauDebug();
+            }
+
+            if (e.getCode() == KeyCode.D) {
+                partie.ActiverDebug();
+            }
+        });
+
         scene.setOnKeyReleased(e -> Input.setKeyPressed(e.getCode(), false));
 
         var canvas = new Canvas(WIDTH, HEIGHT);

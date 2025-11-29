@@ -34,6 +34,8 @@ public class Partie {
     private Image imgDollar = new Image("icone-dollar.png");
     private Image imgMaison = new Image("icone-maison.png");
 
+    private boolean modeDebug = false;
+
     public Partie() {
 
     }
@@ -161,6 +163,9 @@ public class Partie {
 
         camelot.draw(context, camera);
         drawHUD(context);
+        if (modeDebug) {
+            drawDebug(context);
+        }
     }
 
     public void drawBrique(GraphicsContext context) {
@@ -222,12 +227,12 @@ public class Partie {
     //Méthode pour dessiner la transition de niveau
     private void drawTransitionNiveau(GraphicsContext context) {
 
-            context.setFill(Color.BLACK);
-            context.fillRect(0, 0, MainJavaFX.WIDTH, MainJavaFX.HEIGHT);
-            context.setFill(Color.GREEN);
-            context.setFont(javafx.scene.text.Font.font(40));
-            context.setTextAlign(TextAlignment.CENTER);
-            context.fillText("Niveau " + niveauActuel, MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2);
+        context.setFill(Color.BLACK);
+        context.fillRect(0, 0, MainJavaFX.WIDTH, MainJavaFX.HEIGHT);
+        context.setFill(Color.GREEN);
+        context.setFont(javafx.scene.text.Font.font(40));
+        context.setTextAlign(TextAlignment.CENTER);
+        context.fillText("Niveau " + niveauActuel, MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2);
 
     }
 
@@ -244,6 +249,33 @@ public class Partie {
         context.setFill(Color.GREEN);
         context.fillText("Argent collecté : " + argent + "$",
                 MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2 + 30);
+    }
+
+    private void drawDebug(GraphicsContext context) {
+
+        context.setStroke(Color.YELLOW);
+        context.setLineWidth(2);
+
+        double xLigne = MainJavaFX.WIDTH * 0.2;
+        context.strokeLine(xLigne, 0, xLigne, MainJavaFX.HEIGHT);
+
+        for (Maison m : maisons) {
+
+            context.strokeRect(
+                    m.boite.position.getX() - camera.getPositionCamera().getX(),
+                    m.boite.position.getY(),
+                    81,
+                    76
+            );
+
+            for (Fenetre f : m.fenetres) {
+                context.strokeRect(f.position.getX() - camera.getPositionCamera().getX(), f.position.getY(), 159, 130);
+            }
+        }
+
+        for (Journal j : camelot.getJournauxLances()) {
+            context.strokeRect(j.getPosition().getX() - camera.getPositionCamera().getX(), j.getPosition().getY(), 52, 31);
+        }
     }
 
     public void ajouterMaisons() {
@@ -282,10 +314,10 @@ public class Partie {
         camelot = new Camelot();
         maisons.clear();
 
-        if(numeroNiveau ==1){
+        if (numeroNiveau == 1) {
             journauxRestants = 12;
         } else {
-        journauxRestants += 12;
+            journauxRestants += 12;
         }
 
         ajouterMaisons();
@@ -328,8 +360,29 @@ public class Partie {
     public boolean isEnTransitionNiveau() {
         return enTransitionNiveau;
     }
+
     public boolean isPartieFinie() {
         return partieFinie;
+    }
+
+    public void ajouterJournauxDebug() {
+        journauxRestants += 10;
+    }
+
+    public void setJournauxZeroDebug() {
+        journauxRestants = 0;
+    }
+
+    public void prochainNiveauDebug() {
+        if (!enTransitionNiveau && !partieFinie) {
+            niveauActuel++;
+            chargerNiveau(niveauActuel);
+            demarrerTransition();
+        }
+    }
+
+    public void ActiverDebug() {
+        modeDebug = !modeDebug;
     }
 }
 
