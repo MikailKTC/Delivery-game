@@ -41,15 +41,18 @@ public class MainJavaFX extends Application {
                 partie.setJournauxZeroDebug();
             }
 
-            if (e.getCode() == KeyCode.I) {
+            if (e.getCode() == KeyCode.L) {
                 partie.prochainNiveauDebug();
             }
 
             if (e.getCode() == KeyCode.D) {
-                partie.ActiverDebugD();
+                partie.activerDebugD();
             }
             if (e.getCode() == KeyCode.F) {
-               partie.ActiverDebugF();
+               partie.activerDebugF();
+            }
+            if(e.getCode() == KeyCode.I){
+                partie.activerDebugI();
             }
         });
 

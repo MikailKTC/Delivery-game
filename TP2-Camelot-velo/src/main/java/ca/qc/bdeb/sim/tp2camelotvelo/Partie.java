@@ -36,6 +36,8 @@ public class Partie {
 
     private boolean modeDebugD = false;
     private boolean modeDebugF = false;
+    private boolean modeDebugI = false;
+
 
     private ArrayList<Point2D> positionsVecteursFixes = new ArrayList<>();
     private ArrayList<Point2D> vecteursFixes = new ArrayList<>();
@@ -141,11 +143,12 @@ public class Partie {
         drawHUD(context);
 
         if (modeDebugD) {
-            drawDebug(context);
+            drawDebugD(context);
         }
         if (modeDebugF) {
-            drawDebugChamp(context);
+            drawVecteursChamp(context);
         }
+
     }
 
     public void drawBrique(GraphicsContext context) {
@@ -237,7 +240,7 @@ public class Partie {
                 (double) MainJavaFX.WIDTH / 2, (double) MainJavaFX.HEIGHT / 2 + 30);
     }
 
-    private void drawDebug(GraphicsContext context) {
+    private void drawDebugD(GraphicsContext context) {
 
         context.setStroke(Color.YELLOW);
         context.setLineWidth(2);
@@ -266,7 +269,7 @@ public class Partie {
 
     }
 
-    public void drawDebugChamp(GraphicsContext context) {
+    public void calculerVecteursDebugChamp() {
 
         if (!vecteursInit) {
             // Initialiser uniquement si les vecteurs n'ont pas encore été calculés
@@ -284,6 +287,11 @@ public class Partie {
             }
             vecteursInit = true; // Mtn qu'on a les vecteurs, on ne les calculs plus
         }
+    }
+
+    public void drawVecteursChamp(GraphicsContext context) {
+
+        calculerVecteursDebugChamp();
 
         //  Dessiner les vecteurs stockés
         for (int i = 0; i < positionsVecteursFixes.size(); i++) {
@@ -300,6 +308,7 @@ public class Partie {
             }
         }
     }
+
 
     public void ajouterMaisons() {
 
@@ -372,6 +381,8 @@ public class Partie {
         camelot = new Camelot();
         maisons.clear();
         particules.clear();
+        vecteursFixes.clear();
+        positionsVecteursFixes.clear();
 
 
         if (numeroNiveau == 1) {
@@ -382,6 +393,13 @@ public class Partie {
 
         ajouterMaisons();
         ajouterParticules();
+
+        vecteursInit = false;
+        modeDebugF = false;
+        modeDebugD = false;
+        modeDebugI = true;
+
+        calculerVecteursDebugChamp();
 
         enTransitionNiveau = true;
         compteurTransition = 0;
@@ -442,12 +460,34 @@ public class Partie {
         }
     }
 
-    public void ActiverDebugD() {
+    public void activerDebugD() {
         modeDebugD = !modeDebugD;
     }
 
-    public void ActiverDebugF() {
+    public void activerDebugF() {
         modeDebugF = !modeDebugF;
+
+    }
+
+    public void activerDebugI() {
+
+        if(modeDebugI){
+
+            modeDebugF = false;
+            //On vide les vecteurs, puis les recalcul avec les nouvelles particules
+            particules.clear();
+            vecteursFixes.clear();
+            positionsVecteursFixes.clear();
+            vecteursInit = false;
+
+            for (int i = 0; i < LIMITE_NIVEAU; i += 50) {
+                particules.add(new ParticuleChargee(new Point2D(i, 10)));
+                particules.add(new ParticuleChargee(new Point2D(i, MainJavaFX.HEIGHT - 10)));
+            }
+            modeDebugI = false;
+        }
+
+
     }
 
     public boolean levelManager(double deltaTemps, GraphicsContext context) {
