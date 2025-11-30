@@ -27,19 +27,6 @@ public class BoiteAuxLettres extends ObjetInteractif {
 
     }
 
-    public boolean collisionAvecJournal(Journal j) {
-
-        boolean overlapX =
-                (j.getDroite() > this.getGauche()) &&
-                        (j.getGauche() < this.getDroite());
-
-        boolean overlapY =
-                (j.getBas() > this.getHaut()) &&
-                        (j.getHaut() < this.getBas());
-
-        return overlapX && overlapY;
-
-    }
     public void changerCouleurBoite(){
 
         if (!dejaTouchee) {

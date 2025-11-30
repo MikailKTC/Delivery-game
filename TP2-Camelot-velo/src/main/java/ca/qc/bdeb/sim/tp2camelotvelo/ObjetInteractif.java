@@ -20,6 +20,20 @@ public abstract class ObjetInteractif extends Objet{
         position = position.add(velocite.multiply(deltaTemps));
     }
 
+    public boolean collisionAvecJournal(Journal j) {
+
+        boolean overlapX =
+                (j.getDroite() > this.getGauche()) &&
+                        (j.getGauche() < this.getDroite());
+
+        boolean overlapY =
+                (j.getBas() > this.getHaut()) &&
+                        (j.getHaut() < this.getBas());
+
+        return overlapX && overlapY;
+
+    }
+
     public abstract void update(double deltaTemps);
 
     public double getHaut() {

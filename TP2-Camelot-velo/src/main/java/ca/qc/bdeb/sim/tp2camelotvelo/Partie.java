@@ -87,7 +87,9 @@ public class Partie {
                         break;
                     }
                 }
-                if (collision) break; //Éviter de parcourir tous les objets si on a déja trouver une collision
+                if (collision) {
+                    break; //Éviter de parcourir tous les objets si on a déja trouver une collision
+                }
             }
 
             if (collision) {
@@ -200,7 +202,7 @@ public class Partie {
         context.drawImage(imgDollar, 120, 7, 40, 25);
         context.fillText(argent + "", 170, 26);
 
-        StringBuilder sb = new StringBuilder(); //StringBuilder : Concaténer et modifier des String efficacement
+        StringBuilder sb = new StringBuilder(); 
 
         for (Maison m : maisons) {
             if (m.abonnee) {

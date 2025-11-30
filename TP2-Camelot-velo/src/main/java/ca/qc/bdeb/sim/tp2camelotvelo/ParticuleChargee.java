@@ -47,9 +47,6 @@ public class ParticuleChargee extends ObjetInteractif {
         context.fillOval(posEcran.getX(), posEcran.getY(), DIAMETRE, DIAMETRE);
     }
 
-    public double getCharge() {
-        return CHARGE;
-    }
 
 
 }
