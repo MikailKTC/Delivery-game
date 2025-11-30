@@ -1,6 +1,5 @@
 package ca.qc.bdeb.sim.tp2camelotvelo;
 
-import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -17,12 +16,12 @@ public class Partie {
     private Camelot camelot = new Camelot();
     private ArrayList<Maison> maisons = new ArrayList<>();
     private ArrayList<ParticuleChargee> particules = new ArrayList<>();
+
     private Camera camera = new Camera();
     private Image background = new Image("brique.png");
     private int niveauActuel = 1;
     private int argent = 0;
     private int journauxRestants = 0;
-    private boolean chargerProchainNiveau = false;
 
     private double tempsEcouleLance = 0;
     private boolean enTransitionNiveau = false;
@@ -35,7 +34,12 @@ public class Partie {
     private Image imgDollar = new Image("icone-dollar.png");
     private Image imgMaison = new Image("icone-maison.png");
 
-    private boolean modeDebug = false;
+    private boolean modeDebugD = false;
+    private boolean modeDebugF = false;
+
+    private ArrayList<Point2D> positionsVecteursFixes = new ArrayList<>();
+    private ArrayList<Point2D> vecteursFixes = new ArrayList<>();
+    private boolean vecteursInit = false; // pour ne calculer qu'une seule fois
 
     public Partie() {
 
@@ -43,52 +47,19 @@ public class Partie {
 
     public void update(double deltaTemps, GraphicsContext context) {
 
-        //Si la partie fini, dessiner l ecran de fin de partie
-        if (partieFinie) {
-            timerFinPartie += deltaTemps;
-            drawEcranFin(context);
-
-            //apres 3 secondes, on arrete de dessiner et recommence au niveau 1
-            if (timerFinPartie >= 3) {
-                resetPartie();
-                chargerNiveau(1);
-                demarrerTransition();
-            }
-            return;
-        }
-
-        //Si on est en changement de niveau, dessiner l'écran de transition
-        if (enTransitionNiveau) {
-            compteurTransition += deltaTemps;
-
-            drawTransitionNiveau(context);
-
-            //Apres 3 secondes, on arrete de dessiner et commence le niveau
-            if (compteurTransition >= 3) {
-                enTransitionNiveau = false;
-            }
-            return;
+        if (levelManager(deltaTemps, context)) {
+            return;  // si on est encore en transition, on empêche le code de continuer
         }
 
         camelot.supprimerJournaux(camera);
+
+        updateAccelerationJournaux();
+
         camelot.update(deltaTemps);
         camera.suivreCamelot(camelot);
 
         traiterCollisionsJournaux();
-
-        //Vérifier a chaque frame que les conditions de fin de niveau sont remplies ou non
-        conditionPourChargerNiveau();
-
-        boolean zPressed = Input.isKeyPressed(KeyCode.Z);
-        boolean xPressed = Input.isKeyPressed(KeyCode.X);
-
-        //Lancer un journal toutes les 0,5sec
-        tempsEcouleLance += deltaTemps;
-        if (tempsEcouleLance >= 0.5 && (zPressed || xPressed)) {
-            lancerJournalCamelot();
-            tempsEcouleLance = 0;
-        }
-
+        updateLancerJournaux(deltaTemps);
     }
 
     private void traiterCollisionsJournaux() {
@@ -169,8 +140,11 @@ public class Partie {
 
         drawHUD(context);
 
-        if (modeDebug) {
+        if (modeDebugD) {
             drawDebug(context);
+        }
+        if (modeDebugF) {
+            drawDebugChamp(context);
         }
     }
 
@@ -244,7 +218,7 @@ public class Partie {
         context.setFill(Color.GREEN);
         context.setFont(javafx.scene.text.Font.font(40));
         context.setTextAlign(TextAlignment.CENTER);
-        context.fillText("Niveau " + niveauActuel, MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2);
+        context.fillText("Niveau " + niveauActuel, (double) MainJavaFX.WIDTH / 2, (double) MainJavaFX.HEIGHT / 2);
 
     }
 
@@ -256,11 +230,11 @@ public class Partie {
         context.setFont(javafx.scene.text.Font.font(40));
 
         context.setFill(Color.RED);
-        context.fillText("Rupture de stocks", MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2 - 30);
+        context.fillText("Rupture de stocks", (double) MainJavaFX.WIDTH / 2, (double) MainJavaFX.HEIGHT / 2 - 30);
 
         context.setFill(Color.GREEN);
         context.fillText("Argent collecté : " + argent + "$",
-                MainJavaFX.WIDTH / 2, MainJavaFX.HEIGHT / 2 + 30);
+                (double) MainJavaFX.WIDTH / 2, (double) MainJavaFX.HEIGHT / 2 + 30);
     }
 
     private void drawDebug(GraphicsContext context) {
@@ -287,6 +261,43 @@ public class Partie {
 
         for (Journal j : camelot.getJournauxLances()) {
             context.strokeRect(j.getPosition().getX() - camera.getPositionCamera().getX(), j.getPosition().getY(), 52, 31);
+        }
+
+
+    }
+
+    public void drawDebugChamp(GraphicsContext context) {
+
+        if (!vecteursInit) {
+            // Initialiser uniquement si les vecteurs n'ont pas encore été calculés
+            for (double x = 0; x < LIMITE_NIVEAU; x += 50) {
+                for (double y = 0; y < MainJavaFX.HEIGHT; y += 50) {
+
+                    Point2D positionMonde = new Point2D(x, y);
+                    Point2D champ = champElectrique(positionMonde);
+
+                    if (champ.magnitude() >= 1) { // Ne stocker que les champs significatifs
+                        positionsVecteursFixes.add(positionMonde);
+                        vecteursFixes.add(champ);
+                    }
+                }
+            }
+            vecteursInit = true; // Mtn qu'on a les vecteurs, on ne les calculs plus
+        }
+
+        //  Dessiner les vecteurs stockés
+        for (int i = 0; i < positionsVecteursFixes.size(); i++) {
+
+            Point2D positionMonde = positionsVecteursFixes.get(i);
+            Point2D champ = vecteursFixes.get(i);
+
+            double xEcran = positionMonde.getX() - camera.getPositionCamera().getX();
+            double yEcran = positionMonde.getY();
+
+            // Dessiner uniquement si le vecteur est visible à l'écran
+            if (xEcran >= 0 && xEcran < MainJavaFX.WIDTH) {
+                UtilitairesDessins.dessinerVecteurForce(new Point2D(xEcran, yEcran), champ, context);
+            }
         }
     }
 
@@ -321,6 +332,28 @@ public class Partie {
         }
     }
 
+    public Point2D champElectrique(Point2D position) {
+
+        Point2D champTotal = new Point2D(0, 0);
+
+        for (ParticuleChargee particule : particules) {
+            champTotal = champTotal.add(particule.champElectriqueAuPoint(position));
+
+        }
+        return champTotal;
+
+    }
+
+    public void updateAccelerationJournaux() {
+        for (Journal journal : camelot.getJournauxLances()) {
+            journal.setAcceleration(new Point2D(0, 1500));
+            Point2D forceElectrique = champElectrique(journal.getPosition()).multiply(journal.getCharge());
+
+            Point2D accelerationChamp = forceElectrique.multiply(1 / journal.getMasse());
+            journal.setAcceleration(journal.getAcceleration().add(accelerationChamp));
+        }
+    }
+
     public void demarrerTransition() {
         enTransitionNiveau = true;
         compteurTransition = 0;
@@ -349,7 +382,6 @@ public class Partie {
 
         ajouterMaisons();
         ajouterParticules();
-
 
         enTransitionNiveau = true;
         compteurTransition = 0;
@@ -410,8 +442,58 @@ public class Partie {
         }
     }
 
-    public void ActiverDebug() {
-        modeDebug = !modeDebug;
+    public void ActiverDebugD() {
+        modeDebugD = !modeDebugD;
+    }
+
+    public void ActiverDebugF() {
+        modeDebugF = !modeDebugF;
+    }
+
+    public boolean levelManager(double deltaTemps, GraphicsContext context) {
+
+        //Si la partie fini, dessiner l ecran de fin de partie
+        if (partieFinie) {
+            timerFinPartie += deltaTemps;
+            drawEcranFin(context);
+
+            //apres 3 secondes, on arrete de dessiner et recommence au niveau 1
+            if (timerFinPartie >= 3) {
+                resetPartie();
+                chargerNiveau(1);
+                demarrerTransition();
+            }
+            return true;
+        }
+
+        //Si on est en changement de niveau, dessiner l'écran de transition
+        if (enTransitionNiveau) {
+            compteurTransition += deltaTemps;
+
+            drawTransitionNiveau(context);
+
+            //Apres 3 secondes, on arrete de dessiner et commence le niveau
+            if (compteurTransition >= 3) {
+                enTransitionNiveau = false;
+            }
+            return true;
+        }
+        conditionPourChargerNiveau();
+
+
+        return false;
+    }
+
+    public void updateLancerJournaux(double deltaTemps) {
+        boolean zPressed = Input.isKeyPressed(KeyCode.Z);
+        boolean xPressed = Input.isKeyPressed(KeyCode.X);
+
+        //Lancer un journal toutes les 0,5sec
+        tempsEcouleLance += deltaTemps;
+        if (tempsEcouleLance >= 0.5 && (zPressed || xPressed)) {
+            lancerJournalCamelot();
+            tempsEcouleLance = 0;
+        }
     }
 }
 

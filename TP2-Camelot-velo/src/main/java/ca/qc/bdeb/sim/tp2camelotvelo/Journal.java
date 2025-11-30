@@ -5,9 +5,10 @@ import javafx.scene.image.Image;
 
 public class Journal extends ObjetInteractif {
 
-    //Variable globale, vérifier si on a le droit
-    public static double masse = 1 + Math.random();
+    private static final double GRAVITE = 1500;
+    private double masse = 1 + Math.random();
     private boolean compteurDejaDecremente = false; //Compteur qui permet de supprimer un journal du joueur
+    private final double charge = 900;
 
     public Journal(Point2D velocite, Point2D position) {
 
@@ -18,7 +19,7 @@ public class Journal extends ObjetInteractif {
 
         images = new Image[]{new Image("journal.png")};
 
-        acceleration = new Point2D(0, 1500);
+        acceleration = new Point2D(0, GRAVITE);
 
     }
 
@@ -34,11 +35,11 @@ public class Journal extends ObjetInteractif {
 
     }
 
-    public boolean isCompteurDejaDecremente() {
-        return compteurDejaDecremente;
+    public double getMasse() {
+        return masse;
     }
 
-    public void setCompteurDejaDecremente(boolean compteurDejaDecremente) {
-        this.compteurDejaDecremente = compteurDejaDecremente;
+    public double getCharge() {
+        return charge;
     }
 }

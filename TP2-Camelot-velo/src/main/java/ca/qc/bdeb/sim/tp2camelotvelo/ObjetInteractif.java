@@ -72,4 +72,12 @@ public abstract class ObjetInteractif extends Objet{
         return 0;
     }
 
+    public Point2D getAcceleration() {
+        return acceleration;
+    }
+
+    public void setAcceleration(Point2D acceleration) {
+        this.acceleration = acceleration;
+    }
+
 }

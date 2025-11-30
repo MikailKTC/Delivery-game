@@ -47,9 +47,9 @@ public class Maison extends Objet {
 
         Point2D posEcran = camera.coordoEcran(position);
 
-        context.setFill(Color.WHITE);
-        context.setFont(new Font(24));
-        context.fillText(String.valueOf(adresse), posEcran.getX() + 60, posEcran.getY() + 70);
+        context.setFill(Color.YELLOW);
+        context.setFont(new Font(32));
+        context.fillText(String.valueOf(adresse), posEcran.getX() + 50, posEcran.getY() + 40); //Changer en constantes
 
     }
 

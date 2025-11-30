@@ -12,7 +12,7 @@ public class Camelot extends ObjetInteractif {
     private int indexImage = 0;
     private double tempsEcoule = 0;
     protected boolean toucheLeSol;
-    private final ArrayList<Journal> journauxLances = new ArrayList<>();
+    private  ArrayList<Journal> journauxLances = new ArrayList<>();
 
     public Camelot() {
 
@@ -111,7 +111,8 @@ public class Camelot extends ObjetInteractif {
                 impulsion = impulsion.multiply(1.5);
             }
 
-            Point2D nouvVelocite = velocite.add(impulsion.multiply(1 / Journal.masse));
+            Journal journal = new Journal(new Point2D(0,0),new Point2D(0,0));
+            Point2D nouvVelocite = velocite.add(impulsion.multiply(1 / journal.getMasse()));
             double max = 1500;
 
             //Maximum vélocité = 1500px/sec
@@ -119,7 +120,7 @@ public class Camelot extends ObjetInteractif {
                 nouvVelocite = nouvVelocite.multiply(max / nouvVelocite.magnitude());
             }
 
-            Journal journal = new Journal(nouvVelocite, this.getCentre());
+            journal = new Journal(nouvVelocite, this.getCentre());
             journauxLances.add(journal);
         }
 
@@ -163,6 +164,7 @@ public class Camelot extends ObjetInteractif {
     protected Image getImageToDraw() {
         return images[indexImage];
     }
+
 
 
 }

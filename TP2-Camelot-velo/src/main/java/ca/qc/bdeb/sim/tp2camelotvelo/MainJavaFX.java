@@ -2,7 +2,6 @@ package ca.qc.bdeb.sim.tp2camelotvelo;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
@@ -47,7 +46,10 @@ public class MainJavaFX extends Application {
             }
 
             if (e.getCode() == KeyCode.D) {
-                partie.ActiverDebug();
+                partie.ActiverDebugD();
+            }
+            if (e.getCode() == KeyCode.F) {
+               partie.ActiverDebugF();
             }
         });
 

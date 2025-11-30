@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 public class ParticuleChargee extends ObjetInteractif {
 
-
+    private static final double K = 90;
     private static final double DIAMETRE = 20;
     private static final double CHARGE = 900;
     private Color couleur;
@@ -28,16 +28,14 @@ public class ParticuleChargee extends ObjetInteractif {
 
     public Point2D champElectriqueAuPoint(Point2D point) {
 
-        double K = 90;
-
-        Point2D r = point.subtract(this.getCentre());
+        Point2D r = point.subtract(this.getCentre()); //Distance entre journal et la particule chargée
         double distance = r.magnitude();
-        if(distance<10){
-            distance =10;
+        if(distance<1){ //Si la distance est plus petite que 1, pour évtier les bug, on garde 1.
+            distance =1;
         }
-        Point2D direction = r.normalize();
-        double magnitude = K * CHARGE / (distance * distance);
-        return direction.multiply(magnitude);
+        Point2D direction = r.normalize(); // Vecteur unitaire
+        double moduleChamp = K * CHARGE / (distance * distance);
+        return direction.multiply(moduleChamp); //Vecteur champ électrique retourné
     }
 
     @Override
