@@ -1,10 +1,8 @@
 package ca.qc.bdeb.sim.tp2camelotvelo;
 
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
-public abstract class ObjetInteractif extends Objet{
+public abstract class ObjetInteractif extends ObjetDuJeu {
 
     protected Point2D velocite;
     protected Point2D acceleration;
@@ -15,82 +13,68 @@ public abstract class ObjetInteractif extends Objet{
         this.acceleration = new Point2D(0, 0);
     }
 
-    public void updatePhysique(double deltaTemps) {
+    protected void updatePhysique(double deltaTemps) {
         velocite = velocite.add(acceleration.multiply(deltaTemps));
         position = position.add(velocite.multiply(deltaTemps));
     }
 
-    public boolean collisionAvecJournal(Journal j) {
+    protected abstract void update(double deltaTemps);
 
-        boolean overlapX =
-                (j.getDroite() > this.getGauche()) &&
-                        (j.getGauche() < this.getDroite());
-
-        boolean overlapY =
-                (j.getBas() > this.getHaut()) &&
-                        (j.getHaut() < this.getBas());
-
-        return overlapX && overlapY;
-
-    }
-
-    public abstract void update(double deltaTemps);
-
-    public double getHaut() {
+    protected double getHaut() {
         return position.getY();
     }
 
-    public double getBas() {
+    protected double getBas() {
         return position.getY() + taille.getY();
     }
 
-    public double getGauche() {
+    protected double getGauche() {
         return position.getX();
     }
 
-    public double getDroite() {
+    protected double getDroite() {
         return position.getX() + taille.getX();
     }
 
-    public Point2D getCentre() {
+    protected Point2D getCentre() {
         return position.add(taille.multiply(1 / 2.0));
     }
 
-    public Point2D getPosition() {
+    protected Point2D getPosition() {
         return position;
     }
 
 
 
-    public Point2D getTaille() {
+    protected Point2D getTaille() {
         return taille;
     }
 
-    public double getHauteur() {
+    protected double getHauteur() {
         return taille.getY();
     }
 
-    public double getLargeur() {
+    protected double getLargeur() {
         return taille.getX();
     }
 
-    public double getBasScene(){
+    protected double getBasScene(){
         return MainJavaFX.HEIGHT;
     }
 
-    public double getDroitScene(){
+    protected double getDroitScene(){
         return MainJavaFX.WIDTH;
     }
 
-    public double getGaucheScene(){
+    protected double getGaucheScene(){
         return 0;
     }
 
-    public Point2D getAcceleration() {
+    protected Point2D getAcceleration() {
         return acceleration;
     }
 
-    public void setAcceleration(Point2D acceleration) {
+    protected void setAcceleration(Point2D acceleration) {
         this.acceleration = acceleration;
     }
 

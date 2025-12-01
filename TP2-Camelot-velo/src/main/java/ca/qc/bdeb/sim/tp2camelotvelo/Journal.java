@@ -7,7 +7,6 @@ public class Journal extends ObjetInteractif {
 
     private static final double GRAVITE = 1500;
     private double masse;
-    private boolean compteurDejaDecremente = false; //Compteur qui permet de supprimer un journal du joueur
     private final double charge = 900;
 
     public Journal(Point2D velocite, Point2D position, double masse) {
@@ -21,15 +20,14 @@ public class Journal extends ObjetInteractif {
         images = new Image[]{new Image("journal.png")};
 
         acceleration = new Point2D(0, GRAVITE);
-
     }
 
     @Override
-    public void update(double deltaTemps) {
+    protected void update(double deltaTemps) {
 
-        double max = 1500;
-        if (velocite.magnitude() > max) {
-            velocite = velocite.multiply(max / velocite.magnitude());
+        double maxVelocite = 1500;
+        if (velocite.magnitude() > maxVelocite) {
+            velocite = velocite.multiply(maxVelocite / velocite.magnitude());
         }
 
         super.updatePhysique(deltaTemps);

@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -29,31 +30,8 @@ public class MainJavaFX extends Application {
         scene.setOnKeyPressed(e -> {
             Input.setKeyPressed(e.getCode(), true);
 
-            if (e.getCode() == KeyCode.ESCAPE) {
-                stage.close();
-            }
+            playEvents(e, stage);
 
-            if (e.getCode() == KeyCode.Q) {
-                partie.ajouterJournauxDebug();
-            }
-
-            if (e.getCode() == KeyCode.K) {
-                partie.setJournauxZeroDebug();
-            }
-
-            if (e.getCode() == KeyCode.L) {
-                partie.prochainNiveauDebug();
-            }
-
-            if (e.getCode() == KeyCode.D) {
-                partie.activerDebugD();
-            }
-            if (e.getCode() == KeyCode.F) {
-               partie.activerDebugF();
-            }
-            if(e.getCode() == KeyCode.I){
-                partie.activerDebugI();
-            }
         });
 
         scene.setOnKeyReleased(e -> Input.setKeyPressed(e.getCode(), false));
@@ -67,13 +45,16 @@ public class MainJavaFX extends Application {
 
         partie.chargerNiveau(1);
         partie.demarrerTransition();
+
         var timer = new AnimationTimer() {
             long dernierTemps = System.nanoTime();
 
             @Override
             public void handle(long temps) {
+
                 double deltaTemps = (temps - dernierTemps) * 1e-9;
                 partie.update(deltaTemps, context);
+
                 //Ne pas dessiner si on est en changement de niveau
                 if (!partie.isEnTransitionNiveau() && !partie.isPartieFinie()) {
                     partie.draw(context);
@@ -89,6 +70,34 @@ public class MainJavaFX extends Application {
         Image icon = new Image("journal.png");
         stage.getIcons().add(icon);
         stage.show();
+    }
+
+    private void playEvents(KeyEvent e, Stage stage) {
+        if (e.getCode() == KeyCode.ESCAPE) {
+            stage.close();
+        }
+
+        if (e.getCode() == KeyCode.Q) {
+            partie.ajouterJournauxDebug();
+        }
+
+        if (e.getCode() == KeyCode.K) {
+            partie.setJournauxZeroDebug();
+        }
+
+        if (e.getCode() == KeyCode.L) {
+            partie.prochainNiveauDebug();
+        }
+
+        if (e.getCode() == KeyCode.D) {
+            partie.activerDebugD();
+        }
+        if (e.getCode() == KeyCode.F) {
+            partie.activerDebugF();
+        }
+        if (e.getCode() == KeyCode.I) {
+            partie.activerDebugI();
+        }
     }
 
     public static void main(String[] args) {

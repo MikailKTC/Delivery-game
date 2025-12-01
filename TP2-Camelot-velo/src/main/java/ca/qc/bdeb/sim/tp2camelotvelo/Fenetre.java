@@ -3,13 +3,13 @@ package ca.qc.bdeb.sim.tp2camelotvelo;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
-public class Fenetre extends ObjetInteractif {
+public class Fenetre extends ObjetCollisionnable {
 
     private boolean abonne;
     private Image imageNormale;
     private Image imageBriseeRouge;
     private Image imageBriseeVerte;
-    protected boolean estBrisee;
+    private boolean estBrisee;
 
     public Fenetre(Point2D position, boolean abonne) {
         super(position, 150, 120);
@@ -26,7 +26,7 @@ public class Fenetre extends ObjetInteractif {
 
 
     @Override
-    public void update(double deltaTemps) {
+    protected void update(double deltaTemps) {
 
     }
 
@@ -39,5 +39,13 @@ public class Fenetre extends ObjetInteractif {
                 images[0] = imageBriseeRouge;
             }
         }
+    }
+
+    public boolean isEstBrisee() {
+        return estBrisee;
+    }
+
+    public void setEstBrisee(boolean estBrisee) {
+        this.estBrisee = estBrisee;
     }
 }

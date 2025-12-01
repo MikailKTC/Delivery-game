@@ -9,7 +9,10 @@ public class ParticuleChargee extends ObjetInteractif {
     private static final double K = 90;
     private static final double DIAMETRE = 20;
     private static final double CHARGE = 900;
+
     private Color couleur;
+    private double teinteActuelle; //
+    private static final double VITESSE_TEINTE = 60;
 
     public ParticuleChargee(Point2D position) {
         super(position, DIAMETRE, DIAMETRE);
@@ -17,12 +20,17 @@ public class ParticuleChargee extends ObjetInteractif {
         this.velocite = new Point2D(0,0);
         this.acceleration = new Point2D(0,0);
 
-        double teinte = Math.random() * 360;
-        this.couleur = Color.hsb(teinte, 1, 1);
+        this.teinteActuelle = Math.random() * 360;
+        this.couleur = Color.hsb(teinteActuelle, 1, 1);
     }
 
     @Override
-    public void update(double deltaTemps) {
+    protected void update(double deltaTemps) {
+
+        //La logique qui permet d'alterner la couleur des particules a été fourni par ChatGPT
+        teinteActuelle += VITESSE_TEINTE * deltaTemps;
+        teinteActuelle %= 360;
+        this.couleur = Color.hsb(teinteActuelle, 1, 1);
 
     }
 
@@ -39,7 +47,7 @@ public class ParticuleChargee extends ObjetInteractif {
     }
 
     @Override
-    public void drawExtras(GraphicsContext context, Camera camera) {
+    protected void drawExtras(GraphicsContext context, Camera camera) {
 
         Point2D posEcran = camera.coordoEcran(position);
 

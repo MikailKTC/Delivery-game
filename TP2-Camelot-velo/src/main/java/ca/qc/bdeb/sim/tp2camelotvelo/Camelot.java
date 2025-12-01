@@ -12,7 +12,7 @@ public class Camelot extends ObjetInteractif {
     private int indexImage = 0;
     private double tempsEcoule = 0;
     protected boolean toucheLeSol;
-    private  ArrayList<Journal> journauxLances = new ArrayList<>();
+    private ArrayList<Journal> journauxLances = new ArrayList<>();
 
     public Camelot() {
 
@@ -31,13 +31,13 @@ public class Camelot extends ObjetInteractif {
     }
 
     @Override
-    public void update(double deltaTemps) {
+    protected void update(double deltaTemps) {
 
         tempsEcoule += deltaTemps;
 
         indexImage = (int) Math.floor(tempsEcoule * 4) % images.length;
 
-        double vx = accelerer(deltaTemps);
+        double vx = mettreAJourVitesseX(deltaTemps);
 
         velocite = new Point2D(vx, velocite.getY());
 
@@ -47,48 +47,98 @@ public class Camelot extends ObjetInteractif {
 
     }
 
-    //Accélerer vers la droite/gauche/ralentir
-    public double accelerer(double deltaTemps) {
+
+    // ---- Accélerer vers la droite/gauche/ralentir ----
+    private double mettreAJourVitesseX(double deltaTemps) {
 
         double vx = velocite.getX();
         double accel = 300;
+        boolean gauche = Input.isKeyPressed(KeyCode.LEFT);
+        boolean droite = Input.isKeyPressed(KeyCode.RIGHT);
 
-        if (Input.isKeyPressed(KeyCode.LEFT)) {
-            vx -= accel * deltaTemps;
-            if (vx < 200) {
-                vx = 200;
-            }
-        } else if (Input.isKeyPressed(KeyCode.RIGHT)) {
-            vx += accel * deltaTemps;
-            if (vx > 600) vx = 600;
-        } else {
-            if (vx < 400) {
-                vx += accel * deltaTemps;
-                if (vx > 400) vx = 400;
-            } else if (vx > 400) {
-                vx -= accel * deltaTemps;
-                if (vx < 400) vx = 400;
-            }
+        if (gauche)
+            vx = ralentir(deltaTemps, vx, accel);
+
+        else if (droite)
+            vx = accelerer(deltaTemps, vx, accel);
+
+        else
+            vx = recupererVitesseParDefaut(deltaTemps, vx, accel);
+
+        return vx;
+    }
+
+    private double ralentir(double deltaTemps, double vx, double accel) {
+
+        int vitesseMinimale = 200;
+
+        vx -= accel * deltaTemps;
+        if (vx < vitesseMinimale) {
+            vx = vitesseMinimale;
         }
 
         return vx;
     }
 
-    public void sauter() {
+    private double accelerer(double deltaTemps, double vx, double accel) {
 
-        if (position.getY() + taille.getY() >= MainJavaFX.HEIGHT) {
-            position = new Point2D(position.getX(), MainJavaFX.HEIGHT - taille.getY());
-            velocite = new Point2D(velocite.getX(), 0);
-            toucheLeSol = true;
+        int vitesseMaximale = 600;
+
+        vx += accel * deltaTemps;
+        if (vx > vitesseMaximale) {
+            vx = vitesseMaximale;
         }
 
+        return vx;
+    }
+
+    private double recupererVitesseParDefaut(double deltaTemps, double vx, double accel) {
+
+        int vitesseParDefaut = 400;
+
+        if (vx < vitesseParDefaut) {
+            vx += accel * deltaTemps;
+            if (vx > vitesseParDefaut) {
+                vx = vitesseParDefaut;
+            }
+        } else if (vx > vitesseParDefaut) {
+            vx -= accel * deltaTemps;
+            if (vx < vitesseParDefaut) {
+                vx = vitesseParDefaut;
+            }
+        }
+        return vx;
+
+    }
+
+    //-----LOGIQUE DU SAUT-----
+
+    private void sauter() {
+
+        boolean aAtteri = getBas() >= MainJavaFX.HEIGHT;
         boolean jump = Input.isKeyPressed(KeyCode.SPACE)
                 || Input.isKeyPressed(KeyCode.UP);
 
-        if (toucheLeSol && jump) {
-            velocite = new Point2D(velocite.getX(), -500);
-            toucheLeSol = false;
+        if (aAtteri) {
+            mettreAJourContactSol();
         }
+
+        if (toucheLeSol && jump) {
+            declencherSaut();
+        }
+    }
+
+    private void mettreAJourContactSol() {
+        // Logique qui met fin à la chute
+        position = new Point2D(position.getX(), MainJavaFX.HEIGHT - taille.getY());
+        velocite = new Point2D(velocite.getX(), 0);
+        toucheLeSol = true;
+    }
+
+    private void declencherSaut() {
+        // Logique pour le saut
+        velocite = new Point2D(velocite.getX(), -500);
+        toucheLeSol = false;
     }
 
     public void lancerJournal(double masse) {
@@ -99,20 +149,11 @@ public class Camelot extends ObjetInteractif {
         if (zPressed || xPressed) {
 
             Point2D impulsion = new Point2D(0, 0);
+            impulsion = calculImpulsion(impulsion, zPressed, xPressed);
 
-            if (zPressed) {
-                impulsion = new Point2D(900, -900);
-            }
-            if (xPressed) {
-                impulsion = new Point2D(150, -1100);
-            }
-
-            if (Input.isKeyPressed(KeyCode.SHIFT)) {
-                impulsion = impulsion.multiply(1.5);
-            }
-
-            Journal journal = new Journal(new Point2D(0,0),new Point2D(0,0), masse);
+            Journal journal = new Journal(new Point2D(0, 0), new Point2D(0, 0), masse);
             Point2D nouvVelocite = velocite.add(impulsion.multiply(1 / journal.getMasse()));
+
             double max = 1500;
 
             //Maximum vélocité = 1500px/sec
@@ -126,7 +167,24 @@ public class Camelot extends ObjetInteractif {
 
     }
 
-    public void updateJournaux(double deltaTemps) {
+    private Point2D calculImpulsion(Point2D impulsion, boolean zPressed, boolean xPressed) {
+
+        boolean shiftPressed = Input.isKeyPressed(KeyCode.SHIFT);
+
+        if (zPressed) {
+            impulsion = new Point2D(900, -900);
+        }
+        if (xPressed) {
+            impulsion = new Point2D(150, -1100);
+        }
+        if (shiftPressed) {
+            impulsion = impulsion.multiply(1.5);
+        }
+
+        return impulsion;
+    }
+
+    private void updateJournaux(double deltaTemps) {
 
         for (Journal j : journauxLances) {
             j.update(deltaTemps);
@@ -164,7 +222,6 @@ public class Camelot extends ObjetInteractif {
     protected Image getImageToDraw() {
         return images[indexImage];
     }
-
 
 
 }

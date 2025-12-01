@@ -3,14 +3,14 @@ package ca.qc.bdeb.sim.tp2camelotvelo;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
-public class BoiteAuxLettres extends ObjetInteractif {
+public class BoiteAuxLettres extends ObjetCollisionnable {
 
-    boolean abonne;
-    Image imgBoiteNormal;
-    Image imgBoiteVerte;
-    Image imgBoiteRouge;
+    private boolean abonne;
+    private Image imgBoiteNormal;
+    private Image imgBoiteVerte;
+    private Image imgBoiteRouge;
 
-    Boolean dejaTouchee = false;
+    private boolean dejaTouchee = false;
 
     public BoiteAuxLettres(Point2D position, Boolean abonne) {
         super(position, 81, 76);
@@ -23,7 +23,7 @@ public class BoiteAuxLettres extends ObjetInteractif {
     }
 
     @Override
-    public void update(double deltaTemps) {
+    protected void update(double deltaTemps) {
 
     }
 
@@ -40,5 +40,16 @@ public class BoiteAuxLettres extends ObjetInteractif {
         }
     }
 
+    public boolean isAbonne() {
+        return abonne;
+    }
+
+    public boolean isDejaTouchee() {
+        return dejaTouchee;
+    }
+
+    public void setDejaTouchee(boolean dejaTouchee) {
+        this.dejaTouchee = dejaTouchee;
+    }
 }
 

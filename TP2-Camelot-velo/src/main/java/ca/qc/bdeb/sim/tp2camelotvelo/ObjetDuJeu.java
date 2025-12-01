@@ -4,18 +4,18 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public abstract class Objet {
+public abstract class ObjetDuJeu {
     protected Point2D taille;
     protected Image[] images;
     protected Point2D position;
 
-    public Objet(Point2D position, double largeur, double hauteur) {
+    public ObjetDuJeu(Point2D position, double largeur, double hauteur) {
         this.position = position;
         this.taille = new Point2D(largeur, hauteur);
     }
 
     //Draw commun à tous les objets
-    public final void draw(GraphicsContext context, Camera camera) {
+    protected final void draw(GraphicsContext context, Camera camera) {
 
         Point2D posEcran = camera.coordoEcran(position);
         Image img = getImageToDraw();
@@ -34,7 +34,4 @@ public abstract class Objet {
     //Draw spécifiques à certaines classes
     protected void drawExtras(GraphicsContext context, Camera camera) { }
 
-    public void setPosition(Point2D position) {
-        this.position = position;
-    }
 }
