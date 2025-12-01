@@ -91,7 +91,7 @@ public class Camelot extends ObjetInteractif {
         }
     }
 
-    public void lancerJournal() {
+    public void lancerJournal(double masse) {
 
         boolean zPressed = Input.isKeyPressed(KeyCode.Z);
         boolean xPressed = Input.isKeyPressed(KeyCode.X);
@@ -111,7 +111,7 @@ public class Camelot extends ObjetInteractif {
                 impulsion = impulsion.multiply(1.5);
             }
 
-            Journal journal = new Journal(new Point2D(0,0),new Point2D(0,0));
+            Journal journal = new Journal(new Point2D(0,0),new Point2D(0,0), masse);
             Point2D nouvVelocite = velocite.add(impulsion.multiply(1 / journal.getMasse()));
             double max = 1500;
 
@@ -120,7 +120,7 @@ public class Camelot extends ObjetInteractif {
                 nouvVelocite = nouvVelocite.multiply(max / nouvVelocite.magnitude());
             }
 
-            journal = new Journal(nouvVelocite, this.getCentre());
+            journal = new Journal(nouvVelocite, this.getCentre(), masse);
             journauxLances.add(journal);
         }
 

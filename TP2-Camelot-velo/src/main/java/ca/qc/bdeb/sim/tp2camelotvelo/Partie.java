@@ -23,6 +23,8 @@ public class Partie {
     private int argent = 0;
     private int journauxRestants = 0;
 
+    private double masseJournaux;
+
     private double tempsEcouleLance = 0;
     private boolean enTransitionNiveau = false;
     private double compteurTransition = 0;
@@ -202,7 +204,7 @@ public class Partie {
         context.drawImage(imgDollar, 120, 7, 40, 25);
         context.fillText(argent + "", 170, 26);
 
-        StringBuilder sb = new StringBuilder(); 
+        StringBuilder sb = new StringBuilder();
 
         for (Maison m : maisons) {
             if (m.abonnee) {
@@ -393,6 +395,8 @@ public class Partie {
             journauxRestants += 12;
         }
 
+        masseJournaux = 1 + Math.random();
+
         ajouterMaisons();
         ajouterParticules();
 
@@ -433,7 +437,7 @@ public class Partie {
     //Empecher de lancer un journal s'il n'en reste plus
     private void lancerJournalCamelot() {
         if (journauxRestants > 0) {
-            camelot.lancerJournal();
+            camelot.lancerJournal(masseJournaux);
             journauxRestants--;
         }
     }
