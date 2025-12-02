@@ -13,6 +13,7 @@ public abstract class ObjetInteractif extends ObjetDuJeu {
         this.acceleration = new Point2D(0, 0);
     }
 
+    //Physique commun à tous les objets qui bougent
     protected void updatePhysique(double deltaTemps) {
         velocite = velocite.add(acceleration.multiply(deltaTemps));
         position = position.add(velocite.multiply(deltaTemps));

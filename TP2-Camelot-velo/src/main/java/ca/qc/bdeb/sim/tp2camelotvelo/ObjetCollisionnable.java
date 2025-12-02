@@ -14,6 +14,7 @@ public class ObjetCollisionnable extends ObjetInteractif {
     protected void update(double deltaTemps) {
     }
 
+    //retourne s'il y a une collision entre le journal et l'objet ou non
     protected boolean collisionAvecJournal(Journal j) {
 
         boolean overlapX =

@@ -19,6 +19,8 @@ public class Fenetre extends ObjetCollisionnable {
         imageBriseeVerte = new Image("fenetre-brisee-vert.png");
 
         this.abonne = abonne;
+
+        //Au début la fenêtre est intacte
         images = new Image[]{ imageNormale };
 
         estBrisee = false;
@@ -27,11 +29,11 @@ public class Fenetre extends ObjetCollisionnable {
 
     @Override
     protected void update(double deltaTemps) {
-
+        //les fenêtres ne bougent pas donc méthode vide
     }
 
     public void changerCouleurFenetre(){
-        //Changer couleur des fenetres
+        //Changer couleur des fenetres seulement si elles n'ont pas encore été brisées
         if (!estBrisee) {
             if (!abonne) {
                 images[0] = imageBriseeVerte;
@@ -41,11 +43,13 @@ public class Fenetre extends ObjetCollisionnable {
         }
     }
 
-    public boolean isEstBrisee() {
+    // Indique si la fenêtre est brisée
+    public boolean isBrisee() {
         return estBrisee;
     }
 
-    public void setEstBrisee(boolean estBrisee) {
+    //Permet de marquer la fenêtre comme brisée
+    public void setIsBrisee(boolean estBrisee) {
         this.estBrisee = estBrisee;
     }
 }

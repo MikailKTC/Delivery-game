@@ -14,6 +14,7 @@ public class Camera {
         return positionMonde.subtract(positionCamera);
     }
 
+    // Fait suivre la caméra en gardant le Camelot à 20% de l'écran
     public void suivreCamelot(Camelot camelot) {
         double nouveauX = camelot.getPosition().getX() -  MainJavaFX.WIDTH * 0.2;
         positionCamera = new Point2D(nouveauX, 0);

@@ -19,17 +19,20 @@ public class Journal extends ObjetInteractif {
 
         images = new Image[]{new Image("journal.png")};
 
+        //accélération vers le bas pour la gravité
         acceleration = new Point2D(0, GRAVITE);
     }
 
     @Override
     protected void update(double deltaTemps) {
 
+        //On limite la vitesse max du journal pour éviter des bugs
         double maxVelocite = 1500;
         if (velocite.magnitude() > maxVelocite) {
             velocite = velocite.multiply(maxVelocite / velocite.magnitude());
         }
 
+        //physique de base
         super.updatePhysique(deltaTemps);
 
     }

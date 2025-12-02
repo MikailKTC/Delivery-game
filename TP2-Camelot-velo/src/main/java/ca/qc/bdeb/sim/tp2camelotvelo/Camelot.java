@@ -20,13 +20,14 @@ public class Camelot extends ObjetInteractif {
 
         super(new Point2D(MainJavaFX.WIDTH * 0.2, MainJavaFX.HEIGHT - 144), 172, 144);
 
+        //Images pour l’animation
         images = new Image[]{
                 new Image("camelot1.png"),
                 new Image("camelot2.png")
         };
 
         velocite = new Point2D(400, 0);
-        toucheLeSol = true;
+        toucheLeSol = true; //Le camelot commence au sol
         acceleration = new Point2D(0, 1500);
     }
 
@@ -35,6 +36,7 @@ public class Camelot extends ObjetInteractif {
 
         tempsEcoule += deltaTemps;
 
+        // Changer d'image 4 fois par seconde
         indexImage = (int) Math.floor(tempsEcoule * 4) % images.length;
 
         double vx = mettreAJourVitesseX(deltaTemps);
@@ -48,7 +50,7 @@ public class Camelot extends ObjetInteractif {
     }
 
 
-    // ---- Accélerer vers la droite/gauche/ralentir ----
+    // Accélerer vers la droite/gauche/ralentir
     private double mettreAJourVitesseX(double deltaTemps) {
 
         double vx = velocite.getX();
@@ -56,18 +58,18 @@ public class Camelot extends ObjetInteractif {
         boolean gauche = Input.isKeyPressed(KeyCode.LEFT);
         boolean droite = Input.isKeyPressed(KeyCode.RIGHT);
 
-        if (gauche)
+        if (gauche) {
             vx = ralentir(deltaTemps, vx, accel);
-
-        else if (droite)
+        } else if (droite) {
             vx = accelerer(deltaTemps, vx, accel);
-
-        else
+        } else {
             vx = recupererVitesseParDefaut(deltaTemps, vx, accel);
+        }
 
         return vx;
     }
 
+    // Diminue la vitesse quand on va vers la gauche
     private double ralentir(double deltaTemps, double vx, double accel) {
 
         int vitesseMinimale = 200;
@@ -80,6 +82,7 @@ public class Camelot extends ObjetInteractif {
         return vx;
     }
 
+    // Augmente la vitesse quand on va vers la droite
     private double accelerer(double deltaTemps, double vx, double accel) {
 
         int vitesseMaximale = 600;
@@ -92,6 +95,7 @@ public class Camelot extends ObjetInteractif {
         return vx;
     }
 
+    // Ramène la vitesse vers 400px/s quand aucune touche n’est pressée
     private double recupererVitesseParDefaut(double deltaTemps, double vx, double accel) {
 
         int vitesseParDefaut = 400;
@@ -111,7 +115,7 @@ public class Camelot extends ObjetInteractif {
 
     }
 
-    //-----LOGIQUE DU SAUT-----
+    //Logique complet du saut
 
     private void sauter() {
 

@@ -34,6 +34,7 @@ public class ParticuleChargee extends ObjetInteractif {
 
     }
 
+    //Calcul du champ généré par une particule à un point donné
     public Point2D champElectriqueAuPoint(Point2D point) {
 
         Point2D r = point.subtract(this.getCentre()); //Distance entre journal et la particule chargée

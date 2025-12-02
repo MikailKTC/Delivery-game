@@ -26,8 +26,8 @@ public class Partie {
 
     private double masseJournaux;
 
-    private double tempsEcouleLance = 0;
-    private boolean enTransitionNiveau = false;
+    private double tempsEcouleLance = 0; // timer entre deux lancers de journaux
+    private boolean enTransitionNiveau = false; //écran noir entre les niveaux
     private double compteurTransition = 0;
 
     private boolean partieFinie = false;
@@ -43,7 +43,7 @@ public class Partie {
 
     private ArrayList<Point2D> positionsVecteursFixes = new ArrayList<>();
     private ArrayList<Point2D> vecteursFixes = new ArrayList<>();
-    private boolean vecteursInit = false; // pour ne calculer qu'une seule fois
+    private boolean vecteursInit = false; // pour ne calculer qu'une seule fois et éviter recalcul inutile
 
     public Partie() {
 
@@ -68,7 +68,7 @@ public class Partie {
     }
 
 
-    //---- Gérer les collisions avec les objets ----
+    //Gérer les collisions avec les objets
     private void traiterCollisionsJournaux() {
         ArrayList<Journal> journaux = camelot.getJournauxLances();
         ArrayList<Journal> journauxASupprimer = new ArrayList<>();
@@ -115,14 +115,14 @@ public class Partie {
 
     private boolean gererCollisionFenetre(Maison maison, Fenetre fenetre, Journal journal) {
         if (fenetre.collisionAvecJournal(journal)) {
-            if (!fenetre.isEstBrisee()) {
+            if (!fenetre.isBrisee()) {
                 if (maison.isAbonnee()) {
                     argent -= 2;
                 } else {
                     argent += 2;
                 }
                 fenetre.changerCouleurFenetre();
-                fenetre.setEstBrisee(true);
+                fenetre.setIsBrisee(true);
             }
             return true;
         }
@@ -130,7 +130,7 @@ public class Partie {
     }
 
 
-    //---- Draw tous les éléments du jeu ----
+    //Draw tous les éléments du jeu
     public void draw(GraphicsContext context) {
 
         context.clearRect(0, 0, MainJavaFX.WIDTH, MainJavaFX.HEIGHT);
@@ -141,9 +141,12 @@ public class Partie {
         camelot.draw(context, camera);
         drawHUD(context);
 
+        // Debug collisions
         if (modeDebugD) {
             drawDebugD(context);
         }
+
+        // Debug champ électrique
         if (modeDebugF) {
             drawVecteursChamp(context);
         }
@@ -314,6 +317,7 @@ public class Partie {
         positionsVecteursFixes.clear();
 
 
+        //Augmente le nombre de journaux par niveau
         if (numeroNiveau == 1) {
             journauxRestants = 12;
         } else {
@@ -339,7 +343,7 @@ public class Partie {
     //Changer de niveau uniquement si l'une des conditions est remplie
     private void conditionPourChargerNiveau() {
 
-        //condition pour fin de la partie
+        //condition pour fin de la partie (si on a plus de journaux et il n'y en a pas en vol)
         if (!enTransitionNiveau &&
                 journauxRestants <= 0 &&
                 camelot.getJournauxLances().isEmpty()) {
@@ -402,7 +406,7 @@ public class Partie {
     }
 
 
-    // ---- Gérer le déboggage -----
+    // Gérer le déboggage
 
     public void ajouterJournauxDebug() {
         journauxRestants += 10;
@@ -474,7 +478,7 @@ public class Partie {
     }
 
 
-    // ---- Gérer les particules ----
+    // Gérer les particules
 
     private void updateParticules(double deltaTemps) {
         for (ParticuleChargee particule : particules) {
@@ -496,7 +500,7 @@ public class Partie {
     }
 
 
-    // ---- Gérer les journaux lancés -----
+    // Gérer les journaux lancés
 
     //Empecher de lancer un journal s'il n'en reste plus
     private void lancerJournalCamelot() {
@@ -509,7 +513,9 @@ public class Partie {
     private void updateAccelerationJournaux() {
 
         for (Journal journal : camelot.getJournauxLances()) {
+
             journal.setAcceleration(new Point2D(0, 1500));
+
             Point2D forceElectrique = champElectriqueTotal(journal.getPosition()).multiply(journal.getCharge());
 
             Point2D accelerationChamp = forceElectrique.multiply(1 / journal.getMasse());
@@ -535,6 +541,7 @@ public class Partie {
 
         Point2D champTotal = new Point2D(0, 0);
 
+        //Somme des champs
         for (ParticuleChargee particule : particules) {
             champTotal = champTotal.add(particule.champElectriqueAuPoint(position));
 

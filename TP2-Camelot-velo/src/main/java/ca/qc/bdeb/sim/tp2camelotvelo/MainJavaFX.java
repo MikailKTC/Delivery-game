@@ -27,6 +27,7 @@ public class MainJavaFX extends Application {
         var scene = new Scene(root, WIDTH, HEIGHT);
         scene.setFill(Color.BLACK);
 
+        //Gérer les touches enfoncées
         scene.setOnKeyPressed(e -> {
             Input.setKeyPressed(e.getCode(), true);
 
@@ -34,6 +35,7 @@ public class MainJavaFX extends Application {
 
         });
 
+        //Gérer les touches relâchées
         scene.setOnKeyReleased(e -> Input.setKeyPressed(e.getCode(), false));
 
         var canvas = new Canvas(WIDTH, HEIGHT);
@@ -55,7 +57,7 @@ public class MainJavaFX extends Application {
                 double deltaTemps = (temps - dernierTemps) * 1e-9;
                 partie.update(deltaTemps, context);
 
-                //Ne pas dessiner si on est en changement de niveau
+                //Ne pas dessiner si on est en changement de niveau ou si la partie est fini
                 if (!partie.isEnTransitionNiveau() && !partie.isPartieFinie()) {
                     partie.draw(context);
                 }
@@ -64,6 +66,7 @@ public class MainJavaFX extends Application {
         };
         timer.start();
 
+        //Taille de la fenêtre fixe
         stage.setResizable(false);
 
         //Logo du jeu
@@ -72,29 +75,41 @@ public class MainJavaFX extends Application {
         stage.show();
     }
 
+
+    //Méthode qui gère les touches debugage ainsi que fermer le jeu si on appuie sur "esc"
     private void playEvents(KeyEvent e, Stage stage) {
+
+        //Quitter le jeu
         if (e.getCode() == KeyCode.ESCAPE) {
             stage.close();
         }
 
+        //Ajouter 10 journaux
         if (e.getCode() == KeyCode.Q) {
             partie.ajouterJournauxDebug();
         }
 
+        //On set le nombre de journaux à 0
         if (e.getCode() == KeyCode.K) {
             partie.setJournauxZeroDebug();
         }
 
+        //Passer au prochain niveau
         if (e.getCode() == KeyCode.L) {
             partie.prochainNiveauDebug();
         }
 
+        //Mode debug pour le camelot et les hitboxes
         if (e.getCode() == KeyCode.D) {
             partie.activerDebugD();
         }
+
+        //Mode debug pour les particules (les vecteurs)
         if (e.getCode() == KeyCode.F) {
             partie.activerDebugF();
         }
+
+        //Mode particules en haut et en bas de l'écran
         if (e.getCode() == KeyCode.I) {
             partie.activerDebugI();
         }

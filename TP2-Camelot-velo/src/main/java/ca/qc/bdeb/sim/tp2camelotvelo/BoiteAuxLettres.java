@@ -24,6 +24,7 @@ public class BoiteAuxLettres extends ObjetCollisionnable {
 
     @Override
     protected void update(double deltaTemps) {
+        //les boîtes ne bougent pas donc méthode vide
 
     }
 
